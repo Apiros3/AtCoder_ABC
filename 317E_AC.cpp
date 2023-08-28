@@ -100,43 +100,100 @@ struct Init {
 int main()
 {
 
+    ll H, W; cin >> H >> W;
+    vector<string> vec(H);
+    rep(i,0,H) cin >> vec[i];
 
-    ll N, C; cin >> N >> C;
-    vector<ll> T(N), A(N);
-    rep(i,0,N) cin >> T[i] >> A[i];
+    vector<vector<ll>> dp(H,vector<ll>(W,INF)), block(H,vector<ll>(W,0));
+    pair<ll,ll> S, T;
+    rep(i,0,H) {
+        rep(j,0,W) {
+            
+            block[i][j] = (vec[i][j] != '.');
+            if (vec[i][j] == 'S') {
+                S = {i,j};
+                block[i][j] = 0;
+            }
+            if (vec[i][j] == 'G') {
+                T = {i,j};
+                block[i][j] = 0;
+            }
 
-    vector<pair<ll,ll>> vec(60,{0,1});
-    rep(i,0,N) {
-        ll strt = C;
-        rep(j,0,60) {
-            pair<ll,ll> S;
-            bool pos = ((1ll << j) & A[i]);
-            if (T[i] == 1) {
-                S.first = vec[j].first & pos;
-                S.second = vec[j].second & pos;
-            }
-            if (T[i] == 2) {
-                S.first = vec[j].first | pos;
-                S.second = vec[j].second | pos;
-            }
-            if (T[i] == 3) {
-                S.first = vec[j].first ^ pos;
-                S.second = vec[j].second ^ pos;
-            }
-            vec[j] = S;
         }
-        C = 0;
-        rep(j,0,60) {
-            // cout << vec[j].first << " " << vec[j].second << ", ";
-            // cout << strt << " ";
-            if (strt & 1) C += vec[j].second * (1 << j);
-            else C += vec[j].first * (1 << j);
-            strt /= 2;
-        }
-        // cout << endl;
-        cout << C << endl;
-
     }
- 
+
+    rep(i,0,H) {
+        ll blk = 0;
+        rep(j,0,W) {
+            if (vec[i][j] != '.') blk = 0;
+            if (vec[i][j] == '>') blk = 1;
+            block[i][j] = max(block[i][j], blk);
+        }
+    }
+    rep(i,0,H) {
+        ll blk = 0;
+        rrep(j,W-1,0) {
+            if (vec[i][j] != '.') blk = 0;
+            if (vec[i][j] == '<') blk = 1;
+            block[i][j] = max(block[i][j], blk);
+        }
+    }
+    rep(i,0,W) {
+        ll blk = 0;
+        rep(j,0,H) {
+            if (vec[j][i] != '.') blk = 0;
+            if (vec[j][i] == 'v') blk = 1;
+            block[j][i] = max(block[j][i], blk);
+        }
+    }
+    rep(i,0,W) {
+        ll blk = 0;
+        rrep(j,H-1,0) {
+            if (vec[j][i] != '.') blk = 0;
+            if (vec[j][i] == '^') blk = 1;
+            block[j][i] = max(block[j][i], blk);
+        }
+    }
+
+    // rep(i,0,H) {
+    //     rep(j,0,W) cout << block[i][j];
+    //     cout << endl;
+    // }
+
+    queue<pair<ll,ll>> que;
+    que.push(S);
+    dp[S.first][S.second] = 0;
+    while(!que.empty()) {
+        auto tp = que.front();
+        que.pop();
+        ll X = tp.first, Y = tp.second;
+        // cout << X << " " << Y << endl;
+        if (X != 0) {
+            if (dp[X-1][Y] > dp[X][Y] + 1 && !block[X-1][Y]) {
+                dp[X-1][Y] = dp[X][Y] + 1;
+                que.push({X-1,Y});
+            }
+        }
+        if (X != H-1) {
+            if (dp[X+1][Y] > dp[X][Y] + 1 && !block[X+1][Y]) {
+                dp[X+1][Y] = dp[X][Y] + 1;
+                que.push({X+1,Y});
+            }
+        }
+        if (Y != 0) {
+            if (dp[X][Y-1] > dp[X][Y] + 1 && !block[X][Y-1]) {
+                dp[X][Y-1] = dp[X][Y] + 1;
+                que.push({X,Y-1});
+            }
+        }
+        if (Y != W-1) {
+            if (dp[X][Y+1] > dp[X][Y] + 1 && !block[X][Y+1]) {
+                dp[X][Y+1] = dp[X][Y] + 1;
+                que.push({X,Y+1});
+            }
+        }
+    }
+    cout << (dp[T.first][T.second] == INF ? -1 : dp[T.first][T.second]) << endl;
+
     return 0;
 }     

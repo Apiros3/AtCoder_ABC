@@ -100,43 +100,49 @@ struct Init {
 int main()
 {
 
+    ll H, W; cin >> H >> W;
+    ll SH, SW, GH, GW; cin >> SH >> SW >> GH >> GW;
+    SH--; SW--; GH--; GW--;
+    vector<string> vec(H);
+    rep(i,0,H) cin >> vec[i];
 
-    ll N, C; cin >> N >> C;
-    vector<ll> T(N), A(N);
-    rep(i,0,N) cin >> T[i] >> A[i];
+    queue<pair<ll,ll>> que;
+    vector<vector<ll>> dp(H,vector<ll>(W,INF));
+    dp[SH][SW] = 0;
+    que.push({SH,SW});
 
-    vector<pair<ll,ll>> vec(60,{0,1});
-    rep(i,0,N) {
-        ll strt = C;
-        rep(j,0,60) {
-            pair<ll,ll> S;
-            bool pos = ((1ll << j) & A[i]);
-            if (T[i] == 1) {
-                S.first = vec[j].first & pos;
-                S.second = vec[j].second & pos;
+    while(!que.empty()) {
+        auto tm = que.front(); que.pop();
+
+        ll X = tm.first, Y = tm.second;
+
+        if (X != 0) {
+            if (dp[X-1][Y] > dp[X][Y] + 1 && vec[X-1][Y] != '#') {
+                dp[X-1][Y] = dp[X][Y] + 1;
+                que.push({X-1,Y});
             }
-            if (T[i] == 2) {
-                S.first = vec[j].first | pos;
-                S.second = vec[j].second | pos;
-            }
-            if (T[i] == 3) {
-                S.first = vec[j].first ^ pos;
-                S.second = vec[j].second ^ pos;
-            }
-            vec[j] = S;
         }
-        C = 0;
-        rep(j,0,60) {
-            // cout << vec[j].first << " " << vec[j].second << ", ";
-            // cout << strt << " ";
-            if (strt & 1) C += vec[j].second * (1 << j);
-            else C += vec[j].first * (1 << j);
-            strt /= 2;
+        if (X != H-1) {
+            if (dp[X+1][Y] > dp[X][Y] + 1 && vec[X+1][Y] != '#') {
+                dp[X+1][Y] = dp[X][Y] + 1;
+                que.push({X+1,Y});
+            }
         }
-        // cout << endl;
-        cout << C << endl;
-
+        if (Y != 0) {
+            if (dp[X][Y-1] > dp[X][Y] + 1 && vec[X][Y-1] != '#') {
+                dp[X][Y-1] = dp[X][Y] + 1;
+                que.push({X,Y-1});
+            }
+        }
+        if (Y != W-1) {
+            if (dp[X][Y+1] > dp[X][Y] + 1 && vec[X][Y+1] != '#') {
+                dp[X][Y+1] = dp[X][Y] + 1;
+                que.push({X,Y+1});
+            }
+        }
     }
+
+    cout << dp[GH][GW] << endl;
  
     return 0;
 }     

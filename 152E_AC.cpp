@@ -100,43 +100,52 @@ struct Init {
 int main()
 {
 
-
-    ll N, C; cin >> N >> C;
-    vector<ll> T(N), A(N);
-    rep(i,0,N) cin >> T[i] >> A[i];
-
-    vector<pair<ll,ll>> vec(60,{0,1});
-    rep(i,0,N) {
-        ll strt = C;
-        rep(j,0,60) {
-            pair<ll,ll> S;
-            bool pos = ((1ll << j) & A[i]);
-            if (T[i] == 1) {
-                S.first = vec[j].first & pos;
-                S.second = vec[j].second & pos;
-            }
-            if (T[i] == 2) {
-                S.first = vec[j].first | pos;
-                S.second = vec[j].second | pos;
-            }
-            if (T[i] == 3) {
-                S.first = vec[j].first ^ pos;
-                S.second = vec[j].second ^ pos;
-            }
-            vec[j] = S;
+    ll N; cin >> N;
+    vector<ll> vec(N);
+    rep(i,0,N) cin >> vec[i];
+    
+    vector<ll> minfct(1000001,-1);
+    rep(i,2,minfct.size()) {
+        if (minfct[i] != -1) continue;
+        minfct[i] = i;
+        for(auto j = i; j < minfct.size(); j += i) {
+            if (minfct[j] != -1) continue;
+            minfct[j] = i;
         }
-        C = 0;
-        rep(j,0,60) {
-            // cout << vec[j].first << " " << vec[j].second << ", ";
-            // cout << strt << " ";
-            if (strt & 1) C += vec[j].second * (1 << j);
-            else C += vec[j].first * (1 << j);
-            strt /= 2;
-        }
-        // cout << endl;
-        cout << C << endl;
-
     }
- 
+    
+    map<ll,ll> mx;
+    vector<map<ll,ll>> mp(N);
+    rep(i,0,N) {
+        ll tmp = vec[i];
+        while(tmp != 1) {
+            mp[i][minfct[tmp]]++;
+            tmp /= minfct[tmp];
+        }
+        for(auto it = mp[i].begin(); it != mp[i].end(); ++it) {
+            mx[it->first] = max(mx[it->first], it->second);
+        }
+    }
+
+    // for(auto it = mx.begin(); it != mx.end(); ++it) {
+    //     cout << it->first << " " << it->second << endl;
+    // }
+
+    ll ret = 1;
+    for(auto it = mx.begin(); it != mx.end(); ++it) {
+        ret = (ret * modpow(it->first,it->second,MOD10))%MOD10;
+    }
+    ll cnt = 0;
+    rep(i,0,N) {
+        map<ll,ll> cur = mp[i];
+        ll tm = 1;
+        for(auto it = cur.begin(); it != cur.end(); ++it) {
+            ll tmp = modpow(it->first,MOD10-2,MOD10);
+            tm = (tm * modpow(tmp,it->second,MOD10))%MOD10;
+        }
+        cnt += (tm*ret)%MOD10;
+    }
+    cout << cnt%MOD10 << endl;
+
     return 0;
 }     

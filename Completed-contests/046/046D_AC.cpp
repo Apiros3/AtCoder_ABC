@@ -100,43 +100,23 @@ struct Init {
 int main()
 {
 
+    string S;
+    cin >> S;
+    ll cnt = 0;
+    rep(i,0,S.size()) if (S[i] == 'g') cnt++;
 
-    ll N, C; cin >> N >> C;
-    vector<ll> T(N), A(N);
-    rep(i,0,N) cin >> T[i] >> A[i];
-
-    vector<pair<ll,ll>> vec(60,{0,1});
-    rep(i,0,N) {
-        ll strt = C;
-        rep(j,0,60) {
-            pair<ll,ll> S;
-            bool pos = ((1ll << j) & A[i]);
-            if (T[i] == 1) {
-                S.first = vec[j].first & pos;
-                S.second = vec[j].second & pos;
-            }
-            if (T[i] == 2) {
-                S.first = vec[j].first | pos;
-                S.second = vec[j].second | pos;
-            }
-            if (T[i] == 3) {
-                S.first = vec[j].first ^ pos;
-                S.second = vec[j].second ^ pos;
-            }
-            vec[j] = S;
+    ll N = S.size();
+    ll mx = 0, gcn = 0, pcn = 0;
+    rep(i,0,S.size()) {
+        if (S[i] == 'g') gcn++;
+        else pcn++;
+        // cout << gcn << " " << pcn << endl;
+        if (N-gcn-pcn <= gcn-pcn) {
+            mx = max(mx, cnt-gcn);
         }
-        C = 0;
-        rep(j,0,60) {
-            // cout << vec[j].first << " " << vec[j].second << ", ";
-            // cout << strt << " ";
-            if (strt & 1) C += vec[j].second * (1 << j);
-            else C += vec[j].first * (1 << j);
-            strt /= 2;
-        }
-        // cout << endl;
-        cout << C << endl;
-
     }
- 
+    cout << mx << endl;
+
+
     return 0;
 }     

@@ -101,42 +101,29 @@ int main()
 {
 
 
-    ll N, C; cin >> N >> C;
-    vector<ll> T(N), A(N);
-    rep(i,0,N) cin >> T[i] >> A[i];
-
-    vector<pair<ll,ll>> vec(60,{0,1});
-    rep(i,0,N) {
-        ll strt = C;
-        rep(j,0,60) {
-            pair<ll,ll> S;
-            bool pos = ((1ll << j) & A[i]);
-            if (T[i] == 1) {
-                S.first = vec[j].first & pos;
-                S.second = vec[j].second & pos;
-            }
-            if (T[i] == 2) {
-                S.first = vec[j].first | pos;
-                S.second = vec[j].second | pos;
-            }
-            if (T[i] == 3) {
-                S.first = vec[j].first ^ pos;
-                S.second = vec[j].second ^ pos;
-            }
-            vec[j] = S;
-        }
-        C = 0;
-        rep(j,0,60) {
-            // cout << vec[j].first << " " << vec[j].second << ", ";
-            // cout << strt << " ";
-            if (strt & 1) C += vec[j].second * (1 << j);
-            else C += vec[j].first * (1 << j);
-            strt /= 2;
-        }
-        // cout << endl;
-        cout << C << endl;
-
+    ll N, M; cin >> N >> M;
+    vector<vector<ll>> vec(N,vector<ll>(N,-intpow(10,11)));
+    rep(i,0,M) {
+        ll A, B, C; cin >> A >> B >> C;
+        A--;
+        B--;
+        vec[A][B] = C;
+        vec[B][A] = C;
     }
- 
+
+    ll rot[10];
+    rep(i,0,10) rot[i] = i;
+    ll mx = 0;
+    rep(i,0,fact(N)) {
+        ll tdst = 0;
+        rep(j,1,N) {
+            tdst += vec[rot[j-1]][rot[j]];
+            mx = max(mx, tdst);
+        }
+        // if (i%1000 == 0) cout << i << endl;
+        next_permutation(rot,rot+N);
+    }
+    cout << mx << endl;
+
     return 0;
 }     

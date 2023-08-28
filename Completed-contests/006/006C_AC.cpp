@@ -101,42 +101,20 @@ int main()
 {
 
 
-    ll N, C; cin >> N >> C;
-    vector<ll> T(N), A(N);
-    rep(i,0,N) cin >> T[i] >> A[i];
+    //w.t.f i+j+k = N, 2i+3j+4k=M, i,j,k > 0
 
-    vector<pair<ll,ll>> vec(60,{0,1});
-    rep(i,0,N) {
-        ll strt = C;
-        rep(j,0,60) {
-            pair<ll,ll> S;
-            bool pos = ((1ll << j) & A[i]);
-            if (T[i] == 1) {
-                S.first = vec[j].first & pos;
-                S.second = vec[j].second & pos;
-            }
-            if (T[i] == 2) {
-                S.first = vec[j].first | pos;
-                S.second = vec[j].second | pos;
-            }
-            if (T[i] == 3) {
-                S.first = vec[j].first ^ pos;
-                S.second = vec[j].second ^ pos;
-            }
-            vec[j] = S;
-        }
-        C = 0;
-        rep(j,0,60) {
-            // cout << vec[j].first << " " << vec[j].second << ", ";
-            // cout << strt << " ";
-            if (strt & 1) C += vec[j].second * (1 << j);
-            else C += vec[j].first * (1 << j);
-            strt /= 2;
-        }
-        // cout << endl;
-        cout << C << endl;
+    ll N, M; cin >> N >> M;
+    rep(i,0,N+1) {
+        ll k = (M-2*i) - 3*(N-i);
+        ll j = N-i-k;
 
+        if (i >= 0 && j >= 0 && k >= 0) {
+            cout << i << " " << j << " " << k << endl;
+            return 0;
+        }
     }
+    cout << "-1 -1 -1" << endl;
+    
  
     return 0;
 }     

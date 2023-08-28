@@ -101,42 +101,26 @@ int main()
 {
 
 
-    ll N, C; cin >> N >> C;
-    vector<ll> T(N), A(N);
-    rep(i,0,N) cin >> T[i] >> A[i];
-
-    vector<pair<ll,ll>> vec(60,{0,1});
-    rep(i,0,N) {
-        ll strt = C;
-        rep(j,0,60) {
-            pair<ll,ll> S;
-            bool pos = ((1ll << j) & A[i]);
-            if (T[i] == 1) {
-                S.first = vec[j].first & pos;
-                S.second = vec[j].second & pos;
+    ll H, W, M; cin >> H >> W >> M;
+    map<pair<ll,ll>,ll> mp;
+    rep(i,0,M) {
+        ll A, B; cin >> A >> B;
+        rep(j,-1,2) {
+            rep(k,-1,2) {
+                if (1 >= A+j || A+j >= H) continue;
+                if (1 >= B+k || B+k >= W) continue;
+                mp[{A+j,B+k}]++;
             }
-            if (T[i] == 2) {
-                S.first = vec[j].first | pos;
-                S.second = vec[j].second | pos;
-            }
-            if (T[i] == 3) {
-                S.first = vec[j].first ^ pos;
-                S.second = vec[j].second ^ pos;
-            }
-            vec[j] = S;
-        }
-        C = 0;
-        rep(j,0,60) {
-            // cout << vec[j].first << " " << vec[j].second << ", ";
-            // cout << strt << " ";
-            if (strt & 1) C += vec[j].second * (1 << j);
-            else C += vec[j].first * (1 << j);
-            strt /= 2;
-        }
-        // cout << endl;
-        cout << C << endl;
+        }        
 
     }
- 
+    vector<ll> vec(10,0);
+    for(auto it = mp.begin(); it != mp.end(); ++it) {
+        vec[it->second]++;
+    }
+    vec[0] = (H-2)*(W-2) - mp.size();
+
+    rep(i,0,10) cout << vec[i] << endl;
+
     return 0;
 }     

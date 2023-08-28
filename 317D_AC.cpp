@@ -101,42 +101,34 @@ int main()
 {
 
 
-    ll N, C; cin >> N >> C;
-    vector<ll> T(N), A(N);
-    rep(i,0,N) cin >> T[i] >> A[i];
+    ll N; cin >> N;
+    vector<ll> X(N), Y(N), Z(N);
 
-    vector<pair<ll,ll>> vec(60,{0,1});
+    rep(i,0,N) cin >> X[i] >> Y[i] >> Z[i];
+
+    ll sum = 0;
+    for(auto u : Z) sum += u;
+
+    vector<ll> dp(sum+1,INF);
+    dp[0] = 0;
     rep(i,0,N) {
-        ll strt = C;
-        rep(j,0,60) {
-            pair<ll,ll> S;
-            bool pos = ((1ll << j) & A[i]);
-            if (T[i] == 1) {
-                S.first = vec[j].first & pos;
-                S.second = vec[j].second & pos;
-            }
-            if (T[i] == 2) {
-                S.first = vec[j].first | pos;
-                S.second = vec[j].second | pos;
-            }
-            if (T[i] == 3) {
-                S.first = vec[j].first ^ pos;
-                S.second = vec[j].second ^ pos;
-            }
-            vec[j] = S;
+        rrep(j,sum,0) {
+            if (j + Z[i] > sum) continue;
+            ll chng = max(0ll,(X[i]+Y[i]+1)/2 - X[i]);
+            // cout << dp[j] << " " << chng << " " << dp[j+Z[i]] << endl;
+            dp[j + Z[i]] = min(dp[j + Z[i]], dp[j] + chng);
         }
-        C = 0;
-        rep(j,0,60) {
-            // cout << vec[j].first << " " << vec[j].second << ", ";
-            // cout << strt << " ";
-            if (strt & 1) C += vec[j].second * (1 << j);
-            else C += vec[j].first * (1 << j);
-            strt /= 2;
-        }
-        // cout << endl;
-        cout << C << endl;
-
     }
- 
+    // cout << sum << endl;
+    // for(auto u : dp) cout << u << " ";
+    // cout << endl;
+
+    ll mn = INF;
+    rep(i,sum/2+1,sum+1) {
+        mn = min(mn, dp[i]);
+    }
+
+    cout << mn << endl;
+
     return 0;
 }     
