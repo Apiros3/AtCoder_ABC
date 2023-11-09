@@ -874,26 +874,21 @@ int main()
 { 
 
 
-    ll N, M; cin >> N >> M;
-    vvll adj(N);
-    rep(i,0,M) {
-        ll A, B; cin >> A >> B; 
-        A--; B--;
-        adj[A].push_back(B);
-        adj[B].push_back(A);
-    }
+    ll N, A, B; cin >> N >> A >> B;
+    string S; cin >> S;
+    S += S;
 
+    ll mn = INF;
     rep(i,0,N) {
-        map<ll,ll> mp;
-        mp[i]++;
-        for(auto u : adj[i]) {
-            mp[u]++;
-            for(auto v : adj[u]) {
-                mp[v]++;
-            }
+        ll curcost = i*A;
+        ll cnt = 0;
+        rep(j,0,N) {
+            if (S[i+j] != S[N-1+i - j]) cnt++;
         }
-        cout << mp.size() - adj[i].size() - 1 << endl;
-    }    
+        // cout << curcost << " " << cnt << endl;
+        chmin(mn, cnt/2*B + curcost);
+    }
+    cout << mn << endl;
 
 
     return 0;

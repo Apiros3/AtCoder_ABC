@@ -111,7 +111,9 @@ void debug_s(vvll G) {
         debug(u);
     }
 }
-
+void debug_s(vector<string> G) {
+    for (auto u : G) cout << u << endl;
+}
 
 //stores X,Y s.t. AX + BY = gcd(A,B) and returns gcd(A,B)
 ll extGCD(ll A, ll B, ll &X, ll&Y) {
@@ -870,31 +872,46 @@ ld log(T A,W B) {
     return log2(A)/logw(B);
 }
 
+
+
 int main()
 { 
 
 
-    ll N, M; cin >> N >> M;
-    vvll adj(N);
-    rep(i,0,M) {
-        ll A, B; cin >> A >> B; 
-        A--; B--;
-        adj[A].push_back(B);
-        adj[B].push_back(A);
-    }
+    ll A, B; cin >> A >> B;
 
-    rep(i,0,N) {
-        map<ll,ll> mp;
-        mp[i]++;
-        for(auto u : adj[i]) {
-            mp[u]++;
-            for(auto v : adj[u]) {
-                mp[v]++;
-            }
+    cout << "100 100" << endl;
+
+    string stw, stb;
+    rep(i,0,100) stw += ".";
+    rep(i,0,100) stb += "#";
+
+    vector<string> vec;
+    rep(i,0,50) vec.push_back(stb);
+    rep(i,0,50) vec.push_back(stw);
+
+    A--;
+    B--;
+
+    for(int i = 0; i < 50; i+=2) {
+        if (!A) break;  
+        for(int j = 0; j < 100; j+=2) {
+            if (!A) break;
+            vec[i][j] = '.';
+            A--;
         }
-        cout << mp.size() - adj[i].size() - 1 << endl;
+    }    
+    for(int i = 51; i < 100; i+=2) {
+        if (!B) break;  
+        for(int j = 0; j < 100; j+=2) {
+            if (!B) break;
+            vec[i][j] = '#';
+            B--;
+        }
     }    
 
+
+    debug_s(vec);
 
     return 0;
 }     

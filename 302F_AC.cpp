@@ -875,25 +875,41 @@ int main()
 
 
     ll N, M; cin >> N >> M;
-    vvll adj(N);
-    rep(i,0,M) {
-        ll A, B; cin >> A >> B; 
-        A--; B--;
-        adj[A].push_back(B);
-        adj[B].push_back(A);
-    }
-
+    queue<ll> que;
+    vvll adj(N), radj(M+1);
+    vll dist(N,-1), used(M+1,-1);
     rep(i,0,N) {
-        map<ll,ll> mp;
-        mp[i]++;
-        for(auto u : adj[i]) {
-            mp[u]++;
-            for(auto v : adj[u]) {
-                mp[v]++;
+        ll A; cin >> A;
+        rep(j,0,A) {
+            ll S; cin >> S;
+            adj[i].push_back(S);
+            radj[S].push_back(i);
+        }
+    }
+    for(auto u : radj[1]) {
+        que.push(u);
+    }
+    ll cnt = 0;
+    while(!que.empty()) {
+        ll tmp = que.size();
+        rep(i,0,tmp) {
+            ll top = que.front();
+            que.pop();
+            if (dist[top] != -1) continue;
+            dist[top] = cnt;
+            for(auto u : adj[top]) {
+                if (used[u] != -1) continue;
+                for(auto v : radj[u]) {
+                    que.push(v);
+                }
+                used[u] = cnt;
             }
         }
-        cout << mp.size() - adj[i].size() - 1 << endl;
-    }    
+        cnt++;
+    }
+
+    cout << used[M] << endl;
+
 
 
     return 0;

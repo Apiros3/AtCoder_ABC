@@ -111,7 +111,9 @@ void debug_s(vvll G) {
         debug(u);
     }
 }
-
+void debug_s(vector<string> G) {
+    for (auto u : G) cout << u << endl;
+}
 
 //stores X,Y s.t. AX + BY = gcd(A,B) and returns gcd(A,B)
 ll extGCD(ll A, ll B, ll &X, ll&Y) {
@@ -870,31 +872,56 @@ ld log(T A,W B) {
     return log2(A)/logw(B);
 }
 
+ll calc(string S) {
+    ll cnt = 0;
+    rep(i,0,S.size()) {
+        cnt *= 2;
+        cnt += (S[i] - '0');
+    }
+    return cnt;
+}
+
+ll N;
+
+ll dfs(string S) {
+    string tm0 = S, tm1 = S;
+    ll mx = -1;
+    rep(i,0,S.size()) {
+        if (S[i] == '?') {
+            tm0[i] = '0';
+            tm1[i] = '1';
+            rep(j,i+1,S.size()) {
+                if (S[j] == '?') {
+                    tm0[j] = '1';
+                    tm1[j] = '0';
+                }
+            }
+            ll t0 = calc(tm0), t1 = calc(tm1);
+            // cout << tm0 << " " << tm1 << " " << t0 << " " << t1 << endl;  
+            if (t1 <= N) {
+                S[i] = '1';
+                return dfs(S);
+            }
+            else if (t0 <= N) {
+                return t0;
+            }
+            else {
+                S[i] = '0';
+                return dfs(S);
+            }
+        }
+    }
+    return (calc(S) > N ? -1 : calc(S));
+}
+
+
 int main()
 { 
 
+    string S;
+    cin >> S >> N;
 
-    ll N, M; cin >> N >> M;
-    vvll adj(N);
-    rep(i,0,M) {
-        ll A, B; cin >> A >> B; 
-        A--; B--;
-        adj[A].push_back(B);
-        adj[B].push_back(A);
-    }
-
-    rep(i,0,N) {
-        map<ll,ll> mp;
-        mp[i]++;
-        for(auto u : adj[i]) {
-            mp[u]++;
-            for(auto v : adj[u]) {
-                mp[v]++;
-            }
-        }
-        cout << mp.size() - adj[i].size() - 1 << endl;
-    }    
-
+    cout << dfs(S) << endl;
 
     return 0;
 }     

@@ -81,14 +81,6 @@ void debug(vector<T> &G) {
     cout << endl;
 }  
 template <typename T, typename W>
-void debug(map<T,W> &mp) {
-    for (auto &u : mp) {
-        debug(u.first);
-        debug(u.second);
-        cout << endl;
-    }
-} 
-template <typename T, typename W>
 void debug(map<T, vector<W>> &mp) {
     for(auto &u : mp) {
         debug(u.first);
@@ -96,7 +88,7 @@ void debug(map<T, vector<W>> &mp) {
     }
 }
 template <typename T, typename U>
-void debug(map<T,U> mp) {
+void debug(map<T,U> &mp) {
     for(auto u : mp) cout << u.first << "," << u.second << "  ";
     cout << endl;
 }
@@ -111,7 +103,9 @@ void debug_s(vvll G) {
         debug(u);
     }
 }
-
+void debug_s(vector<string> G) {
+    for (auto u : G) cout << u << endl;
+}
 
 //stores X,Y s.t. AX + BY = gcd(A,B) and returns gcd(A,B)
 ll extGCD(ll A, ll B, ll &X, ll&Y) {
@@ -254,7 +248,9 @@ ll inf_check(vvll &to) {
 
 
 struct UnionFind {
+    private:
     vector<ll> par; 
+    public:
     UnionFind(ll N) : par(N) {
         rep(i,0,N) par[i]=i;
     }
@@ -870,30 +866,46 @@ ld log(T A,W B) {
     return log2(A)/logw(B);
 }
 
+ll bigncr(ll N, ll K) {
+    ll ret = 1;
+    rep(i,1,K+1) {
+        ret = (ret * (N+1-i))%MOD10;
+        // cout << ret << endl;
+
+        ret = (ret * modpow(i,MOD10-2,MOD10))%MOD10;
+        // cout << ret << endl;
+    }
+    
+    return ret;
+    
+}
+
+
 int main()
 { 
 
 
     ll N, M; cin >> N >> M;
-    vvll adj(N);
+    vvll adj(N+1);
     rep(i,0,M) {
-        ll A, B; cin >> A >> B; 
-        A--; B--;
+        ll A, B; cin >> A >> B;
         adj[A].push_back(B);
-        adj[B].push_back(A);
     }
-
-    rep(i,0,N) {
-        map<ll,ll> mp;
-        mp[i]++;
+    ll ret = 0;
+    vll rt(N+1);
+    UnionFind UF(N+1);
+    rrep(i,N,1) {
+        ret++;
         for(auto u : adj[i]) {
-            mp[u]++;
-            for(auto v : adj[u]) {
-                mp[v]++;
+            if (UF.root(u) != UF.root(i)) {
+                ret--;
+                UF.unite(u,i);
             }
         }
-        cout << mp.size() - adj[i].size() - 1 << endl;
-    }    
+        rt[i] = ret;
+    }
+    rep(i,2,N+1) cout << rt[i] << endl;
+    cout << 0 << endl;
 
 
     return 0;

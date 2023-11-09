@@ -1,9 +1,9 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// #pragma GCC target ("avx2")
-// #pragma GCC optimization ("O3")
-// #pragma GCC optimization ("unroll-loops")
+#pragma GCC target ("avx2")
+#pragma GCC optimization ("O3")
+#pragma GCC optimization ("unroll-loops")
 
 // #APIROS3 TEMPLATE FROM HERE
 using ll = long long;
@@ -81,14 +81,6 @@ void debug(vector<T> &G) {
     cout << endl;
 }  
 template <typename T, typename W>
-void debug(map<T,W> &mp) {
-    for (auto &u : mp) {
-        debug(u.first);
-        debug(u.second);
-        cout << endl;
-    }
-} 
-template <typename T, typename W>
 void debug(map<T, vector<W>> &mp) {
     for(auto &u : mp) {
         debug(u.first);
@@ -96,7 +88,7 @@ void debug(map<T, vector<W>> &mp) {
     }
 }
 template <typename T, typename U>
-void debug(map<T,U> mp) {
+void debug(map<T,U> &mp) {
     for(auto u : mp) cout << u.first << "," << u.second << "  ";
     cout << endl;
 }
@@ -111,7 +103,9 @@ void debug_s(vvll G) {
         debug(u);
     }
 }
-
+void debug_s(vector<string> G) {
+    for (auto u : G) cout << u << endl;
+}
 
 //stores X,Y s.t. AX + BY = gcd(A,B) and returns gcd(A,B)
 ll extGCD(ll A, ll B, ll &X, ll&Y) {
@@ -254,7 +248,9 @@ ll inf_check(vvll &to) {
 
 
 struct UnionFind {
+    private:
     vector<ll> par; 
+    public:
     UnionFind(ll N) : par(N) {
         rep(i,0,N) par[i]=i;
     }
@@ -870,30 +866,76 @@ ld log(T A,W B) {
     return log2(A)/logw(B);
 }
 
+ll bigncr(ll N, ll K) {
+    ll ret = 1;
+    rep(i,1,K+1) {
+        ret = (ret * (N+1-i))%MOD10;
+        // cout << ret << endl;
+
+        ret = (ret * modpow(i,MOD10-2,MOD10))%MOD10;
+        // cout << ret << endl;
+    }
+    
+    return ret;
+    
+}
+
+
 int main()
 { 
 
 
-    ll N, M; cin >> N >> M;
-    vvll adj(N);
-    rep(i,0,M) {
-        ll A, B; cin >> A >> B; 
-        A--; B--;
-        adj[A].push_back(B);
-        adj[B].push_back(A);
+    ll H, W; cin >> H >> W;
+    vector<string> A(H); input(A);
+
+    vvpll vec(26);
+    vll used(26,0);
+    pll start, goal;
+    rep(i,0,H) rep(j,0,W) {
+        if ('a' <= A[i][j] && A[i][j] <= 'z') {
+            vec[A[i][j]-'a'].emplace_back(i,j);
+        }
+        if (A[i][j] == 'S') start = {i,j};
+        if (A[i][j] == 'G') goal = {i,j};
     }
 
-    rep(i,0,N) {
-        map<ll,ll> mp;
-        mp[i]++;
-        for(auto u : adj[i]) {
-            mp[u]++;
-            for(auto v : adj[u]) {
-                mp[v]++;
+    vvll dist(H,vll(W,INF));
+    queue<pll> que;
+    que.push(start);
+    dist[start.first][start.second] = 0;
+    vll X = {0,1,0,-1}, Y = {1,0,-1,0};
+    while(!que.empty()) {
+        pll top = que.front();
+        ll tx = top.first, ty = top.second;
+        que.pop();
+        rep(i,0,4) {
+            ll tmx = tx + X[i], tmy = ty + Y[i];
+            if (
+                tmx < 0 || tmx >= H || 
+                tmy < 0 || tmy >= W ||
+                A[tmx][tmy] == '#'
+            ) continue;
+            if (chmin(dist[tmx][tmy], dist[tx][ty]+1)) {
+                que.push({tmx,tmy});
             }
         }
-        cout << mp.size() - adj[i].size() - 1 << endl;
-    }    
+        if ('a' <= A[tx][ty] && A[tx][ty] <= 'z') {
+            ll tm = A[tx][ty] - 'a';
+            if (used[tm]) continue;
+            used[tm] = 1;
+            for(auto u : vec[tm]) {
+                if (chmin(dist[u.first][u.second],dist[tx][ty]+1)) {
+                    que.push(u);
+                }
+            }
+        }
+
+    }
+
+    if (dist[goal.first][goal.second] == INF) {
+        cout << -1 << endl;
+    }  
+    else cout << dist[goal.first][goal.second] << endl;
 
 
     return 0;

@@ -1,11 +1,258 @@
-#include <bits/stdc++.h>
-using namespace std;
+#pragma GCC target ("avx2")
+#pragma GCC optimization ("O3")
+#pragma GCC optimization ("unroll-loops")
 
-// #pragma GCC target ("avx2")
-// #pragma GCC optimization ("O3")
-// #pragma GCC optimization ("unroll-loops")
+#include <bits/stdc++.h>
 
 // #APIROS3 TEMPLATE FROM HERE
+// PART 1: OVERLOADS
+
+template<typename T, typename W>
+std::pair<T,W>& operator +=(std::pair<T,W> &lhs, const std::pair<T,W> &rhs) {
+    lhs.first += rhs.first;
+    lhs.second += rhs.second;
+}
+template<typename T, typename W>
+std::pair<T,W> operator +(std::pair<T,W> lhs, const std::pair<T,W> &rhs) {
+    return lhs += rhs;
+}
+template<typename T, typename W>
+std::pair<T,W>& operator -=(std::pair<T,W> &lhs, const std::pair<T,W> &rhs) {
+    lhs.first -= rhs.first;
+    lhs.second -= rhs.second;
+}
+template<typename T, typename W>
+std::pair<T,W> operator -(std::pair<T,W> lhs, const std::pair<T,W> &rhs) {
+    return lhs -= rhs;
+}
+template<typename T, typename W>
+std::pair<T,W>& operator *=(std::pair<T,W> &lhs, const std::pair<T,W> &rhs) {
+    lhs.first *= rhs.first;
+    lhs.second *= rhs.second;
+}
+template<typename T, typename W>
+std::pair<T,W> operator *(std::pair<T,W> lhs, const std::pair<T,W> &rhs) {
+    return lhs *= rhs;
+}
+template<typename T, typename W>
+std::pair<T,W>& operator /=(std::pair<T,W> &lhs, const std::pair<T,W> &rhs) {
+    lhs.first /= rhs.first;
+    lhs.second /= rhs.second;
+}
+template<typename T, typename W>
+std::pair<T,W> operator /(std::pair<T,W> lhs, const std::pair<T,W> &rhs) {
+    return lhs /= rhs;
+}
+
+template<typename T>
+std::vector<T>& operator +=(std::vector<T> &lhs, const std::vector<T> &rhs) {
+    if (lhs.size() != rhs.size()) {
+        throw std::length_error("vectors must be same size to add");
+    }
+    for(int i = 0; i < lhs.size(); ++i) {
+        lhs[i] += rhs[i];
+    }
+    return lhs;
+}
+template<typename T>
+std::vector<T> operator +(std::vector<T> lhs, const std::vector<T> &rhs) {
+    return lhs += rhs;
+}
+template<typename T>
+std::vector<T>& operator -=(std::vector<T> &lhs, const std::vector<T> &rhs) {
+    if (lhs.size() != rhs.size()) {
+        throw std::length_error("vectors must be same size to subtract");
+    }
+    for(int i = 0; i < lhs.size(); ++i) {
+        lhs[i] -= rhs[i];
+    }
+    return lhs;
+}
+template<typename T>
+std::vector<T> operator -(std::vector<T> lhs, const std::vector<T> &rhs) {
+    return lhs -= rhs;
+}
+template<typename T>
+std::vector<T>& operator *=(std::vector<T> &lhs, const std::vector<T> &rhs) {
+    if (lhs.size() != rhs.size()) {
+        throw std::length_error("vectors must be same size to multiply");
+    }
+    for(int i = 0; i < lhs.size(); ++i) {
+        lhs[i] *= rhs[i];
+    }
+    return lhs;
+}
+template<typename T>
+std::vector<T> operator *(std::vector<T> lhs, const std::vector<T> &rhs) {
+    return lhs *= rhs;
+}
+template<typename T>
+std::vector<T>& operator /=(std::vector<T> &lhs, const std::vector<T> &rhs) {
+    if (lhs.size() != rhs.size()) {
+        throw std::length_error("vectors must be same size to divide");
+    }
+    for(int i = 0; i < lhs.size(); ++i) {
+        lhs[i] /= rhs[i];
+    }
+    return lhs;
+}
+template<typename T>
+std::vector<T> operator /(std::vector<T> lhs, const std::vector<T> &rhs) {
+    return lhs /= rhs;
+}
+
+template<typename T>
+std::vector<T>& operator +=(std::vector<T> &lhs, const T& rhs) {
+    for(int i = 0; i < lhs.size(); ++i) {
+        lhs[i] += rhs;
+    }
+    return lhs;
+}
+template<typename T>
+std::vector<T> operator +(std::vector<T> lhs, const T& rhs) {
+    return lhs += rhs;
+}
+template<typename T>
+std::vector<T>& operator -=(std::vector<T> &lhs, const T& rhs) {
+    for(int i = 0; i < lhs.size(); ++i) {
+        lhs[i] -= rhs;
+    }
+    return lhs;
+}
+template<typename T>
+std::vector<T> operator -(std::vector<T> lhs, const T& rhs) {
+    return lhs -= rhs;
+}
+template<typename T>
+std::vector<T>& operator *=(std::vector<T> &lhs, const T& rhs) {
+    for(int i = 0; i < lhs.size(); ++i) {
+        lhs[i] *= rhs;
+    }
+    return lhs;
+}
+template<typename T>
+std::vector<T> operator *(std::vector<T> lhs, const T& rhs) {
+    return lhs *= rhs;
+}
+template<typename T>
+std::vector<T>& operator /=(std::vector<T> &lhs, const T& rhs) {
+    for(int i = 0; i < lhs.size(); ++i) {
+        lhs[i] /= rhs;
+    }
+    return lhs;
+}
+template<typename T>
+std::vector<T> operator /(std::vector<T> lhs, const T& rhs) {
+    return lhs /= rhs;
+}
+template<typename T>
+std::vector<T>& operator %=(std::vector<T> &lhs, const T& rhs) {
+    for(int i = 0; i < lhs.size(); ++i) {
+        lhs[i] %= rhs;
+    }
+    return lhs;
+}
+template<typename T>
+std::vector<T> operator %(std::vector<T> lhs, const T& rhs) {
+    return lhs %= rhs;
+}
+
+// PART 2: FOR DEBUGGING
+
+void debug(int &G) {
+    std::cout << G << " ";
+}
+void debug(long &G) {
+    std::cout << G << " ";
+}
+void debug(long long &G) {
+    std::cout << G << " ";
+}
+void debug(const long long int &G) {
+    std::cout << G << " ";
+}
+void debug(float &G) {
+    std::cout << G << " ";
+}
+void debug(double &G) {
+    std::cout << G << " ";
+}
+void debug(long double &G) {
+    std::cout << G << " ";
+}
+void debug(std::string &G) {
+    std::cout << G << " ";
+}
+template <typename T, typename W>
+void debug(std::pair<T,W> &u) {
+    debug(u.first);
+    std::cout << ",";
+    debug(u.second);
+    std::cout << " ";
+}
+template <typename T>
+void debug(std::vector<T> &G) {
+    for (auto &u : G) debug(u);
+    std::cout << std::endl;
+}  
+template <typename T>
+void debug_ne(std::vector<T> &G) {
+    for (auto &u : G) debug(u);
+}  
+template <typename T>
+void debug_e(std::vector<T> &G) {
+    for (auto &u : G) {
+        debug(u);
+        std::cout << std::endl;
+    }
+}  
+template <typename T, typename W>
+void debug(std::map<std::vector<T>, std::vector<W>> &mp) {
+    for(auto &u : mp) {
+        debug_ne(u.first);
+        std::cout << ": ";
+        debug(u.second);
+    }
+}
+template <typename T, typename W>
+void debug(std::map<T, std::vector<W>> &mp) {
+    for(auto &u : mp) {
+        debug(u.first);
+        std::cout << ": ";
+        debug(u.second);
+    }
+}
+template <typename T, typename W>
+void debug(std::map<std::vector<T>, W> &mp) {
+    for(auto &u : mp) {
+        debug_e(u.first);
+        std::cout << ": ";
+        debug(u.second);
+        std::cout << std::endl;
+    }
+}
+template <typename T, typename U>
+void debug(std::map<T,U> &mp) {
+    for(auto u : mp) std::cout << u.first << "," << u.second << "  ";
+    std::cout << std::endl;
+}
+template <typename T>
+void debug_s(std::vector<std::vector<T>> &G) {
+    std::cout << G.size() << std::endl;
+    for(auto u : G) {
+        std::cout << u.size() << " ";
+        debug(u);
+    }
+}
+template <typename T>
+void debug_s(std::vector<T> &G) {
+    std::cout << G.size() << std::endl;
+    debug(G);
+}
+
+
+// PART 3: NEW FUNCTIONS
+using namespace std;
 using ll = long long;
 using ld = long double;
 using ull = unsigned long long;
@@ -16,6 +263,7 @@ using vvvll = vector<vvll>;
 using vpll = vector<pll>;
 using vvpll = vector<vpll>;
 using vvvpll = vector<vvpll>;
+using vs = vector<string>;
 
 #define rep(i,start,end) for(ll i=start; i<end; i++)
 #define rrep(i,start,end) for(ll i=start; i>=end; i--)
@@ -38,7 +286,7 @@ void input(vector<T> &G, vector<W> &H) {
 }
 
 template <typename T>
-void add(vector<T> &A, vector<T> B) {
+void append(vector<T> &A, vector<T> B) {
     A.insert(A.end(),all(B));
 }
 
@@ -46,71 +294,6 @@ ll popcount(ll X) {
     return __builtin_popcount(X);
 }
 
-
-void debug(int &G) {
-    cout << G << " ";
-}
-void debug(long &G) {
-    cout << G << " ";
-}
-void debug(ll &G) {
-    cout << G << " ";
-}
-void debug(float &G) {
-    cout << G << " ";
-}
-void debug(double &G) {
-    cout << G << " ";
-}
-void debug(ld &G) {
-    cout << G << " ";
-}
-void debug(string &G) {
-    cout << G << " ";
-}
-template <typename T, typename W>
-void debug(pair<T,W> &u) {
-    debug(u.first);
-    cout << ",";
-    debug(u.second);
-    cout << " ";
-}
-template <typename T>
-void debug(vector<T> &G) {
-    for (auto &u : G) debug(u);
-    cout << endl;
-}  
-template <typename T, typename W>
-void debug(map<T,W> &mp) {
-    for (auto &u : mp) {
-        debug(u.first);
-        debug(u.second);
-        cout << endl;
-    }
-} 
-template <typename T, typename W>
-void debug(map<T, vector<W>> &mp) {
-    for(auto &u : mp) {
-        debug(u.first);
-        debug(u.second);
-    }
-}
-template <typename T, typename U>
-void debug(map<T,U> mp) {
-    for(auto u : mp) cout << u.first << "," << u.second << "  ";
-    cout << endl;
-}
-void debug_s(vll G) {
-    cout << G.size() << endl;
-    debug(G);
-}
-void debug_s(vvll G) {
-    cout << G.size() << endl;
-    for(auto u : G) {
-        cout << u.size() << " ";
-        debug(u);
-    }
-}
 
 
 //stores X,Y s.t. AX + BY = gcd(A,B) and returns gcd(A,B)
@@ -132,6 +315,11 @@ ll invmod(ll inv, ll mod) {
 void yesno(bool check) {
     if (check) cout << "Yes" << endl;
     else cout << "No" << endl;
+}
+
+ll infq(ll query) {
+    if (query == INF) return -1;
+    return query;
 }
 
 ull modpow(ull btmn, ull topn, ull mod) {
@@ -254,7 +442,9 @@ ll inf_check(vvll &to) {
 
 
 struct UnionFind {
+    private:
     vector<ll> par; 
+    public:
     UnionFind(ll N) : par(N) {
         rep(i,0,N) par[i]=i;
     }
@@ -342,6 +532,12 @@ struct Modulo {
 
 }mod9(MOD9), mod10(MOD10);
 
+// struct Modulo_s {
+
+
+
+// }
+
 bool isPrime(ll n) {
     if (n < 2 || n % 6 % 4 != 1) return (n | 1) == 3;
     ull A[] = {2, 325, 9375, 28178, 450775, 9780504, 1795265022},
@@ -354,6 +550,10 @@ bool isPrime(ll n) {
     }
     return 1;
 }
+
+
+
+
 
 vector<ll> bfs_uw1_adj(vector<vector<ll>> adj, ll start) {
     vector<ll> dist(adj.size(),INF);
@@ -527,6 +727,7 @@ vvll transpose(vvll adj) {
     }
     return ret_adj;
 }
+
 
 struct general_dfs {
     vll start, fin, prev;
@@ -754,75 +955,6 @@ vll LIS_N(vll G) {
     return ret;
 }
 
-//gives possible factorizations (without 1s)
-vvpll factorization(ll N, ll mn) {
-    vvpll vec;
-    if (N < mn) return vec;
-    for(ll i = mn; i*i <= N; ++i) {
-        ll cnt = 0, tmp = N;
-        while (tmp%i == 0) {
-            cnt++; tmp /= i;
-            auto tmvec = factorization(tmp,i+1);
-            for(auto &u : tmvec) u.push_back({i,cnt});
-            if (tmp == 1) tmvec.push_back(vpll{{i,cnt}});
-            add(vec,tmvec);
-        }
-    }
-    vec.push_back(vpll{{N,1}});
-    return vec;
-
-}
-
-
-bool tbfs(vector<map<ll,ll>> &adj, ll s, ll t, vll &par) {
-    ll N = adj.size();
-    vll visited(N,0);
-    queue<ll> que;
-    que.push(s);
-    visited[s] = 1;
-    par[s] = -1;
-    while(!que.empty()) {
-        ll u = que.front();
-        que.pop();
-        for(auto v : adj[u]) {
-            if (!visited[v.first]) {
-                if (v.first == t) {
-                    par[v.first] = u;
-                    return true; 
-                }
-                que.push(v.first);
-                par[v.first] = u;
-                visited[v.first] = true;
-            }
-        }
-    }
-    return false;
-}
-
-
-ll FF(vector<map<ll,ll>> &adj, ll source, ll target) {
-    ll N = adj.size();
-    vll parent(N);
-    ll mx = 0;
-    while(tbfs(adj,source,target,parent)) {
-        for(ll v = target; v != source; v = parent[v]) {
-            ll u = parent[v];
-            adj[u][v]--;
-            adj[v][u]++;
-            if (adj[u][v] == 0) {
-                adj[u].erase(v);
-            }
-        }
-
-        mx++;
-    }
-    return mx;
-}
-
-ll modrecip(ll recip, ll mod) {
-    return modpow(recip,mod-2,mod);
-}
-
 
 struct Init {
     Init() {
@@ -870,30 +1002,22 @@ ld log(T A,W B) {
     return log2(A)/logw(B);
 }
 
+
+
 int main()
 { 
 
-
-    ll N, M; cin >> N >> M;
-    vvll adj(N);
-    rep(i,0,M) {
-        ll A, B; cin >> A >> B; 
-        A--; B--;
-        adj[A].push_back(B);
-        adj[B].push_back(A);
-    }
-
-    rep(i,0,N) {
-        map<ll,ll> mp;
-        mp[i]++;
-        for(auto u : adj[i]) {
-            mp[u]++;
-            for(auto v : adj[u]) {
-                mp[v]++;
-            }
+    ll N; cin >> N;
+    while(1) {
+        if (N/100*(N/10%10) == (N%10)) {
+            cout << N << endl;
+            return 0;
         }
-        cout << mp.size() - adj[i].size() - 1 << endl;
-    }    
+
+
+
+        N++;
+    }
 
 
     return 0;

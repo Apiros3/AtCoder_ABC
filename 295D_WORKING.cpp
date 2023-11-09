@@ -81,14 +81,6 @@ void debug(vector<T> &G) {
     cout << endl;
 }  
 template <typename T, typename W>
-void debug(map<T,W> &mp) {
-    for (auto &u : mp) {
-        debug(u.first);
-        debug(u.second);
-        cout << endl;
-    }
-} 
-template <typename T, typename W>
 void debug(map<T, vector<W>> &mp) {
     for(auto &u : mp) {
         debug(u.first);
@@ -96,7 +88,7 @@ void debug(map<T, vector<W>> &mp) {
     }
 }
 template <typename T, typename U>
-void debug(map<T,U> mp) {
+void debug(map<T,U> &mp) {
     for(auto u : mp) cout << u.first << "," << u.second << "  ";
     cout << endl;
 }
@@ -111,7 +103,9 @@ void debug_s(vvll G) {
         debug(u);
     }
 }
-
+void debug_s(vector<string> G) {
+    for (auto u : G) cout << u << endl;
+}
 
 //stores X,Y s.t. AX + BY = gcd(A,B) and returns gcd(A,B)
 ll extGCD(ll A, ll B, ll &X, ll&Y) {
@@ -870,31 +864,28 @@ ld log(T A,W B) {
     return log2(A)/logw(B);
 }
 
+ll N;
+bool make(ll v, vll A) {
+    map<ll,ll> mp;
+    mp[0] = 1;
+    rep(i,0,A.size()) {
+        map<ll,ll> tmp;
+        for(auto u : mp) {
+            tmp[u.first - A[i]] = 1;
+            tmp[u.first + A[i]] = 1;
+        }
+        mp = tmp;
+    }
+    // debug(mp);
+    return mp.count(v);
+}
+
+
 int main()
 { 
 
-
-    ll N, M; cin >> N >> M;
-    vvll adj(N);
-    rep(i,0,M) {
-        ll A, B; cin >> A >> B; 
-        A--; B--;
-        adj[A].push_back(B);
-        adj[B].push_back(A);
-    }
-
-    rep(i,0,N) {
-        map<ll,ll> mp;
-        mp[i]++;
-        for(auto u : adj[i]) {
-            mp[u]++;
-            for(auto v : adj[u]) {
-                mp[v]++;
-            }
-        }
-        cout << mp.size() - adj[i].size() - 1 << endl;
-    }    
-
+    string S; cin >> S;
+    
 
     return 0;
 }     

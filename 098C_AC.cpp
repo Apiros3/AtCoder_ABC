@@ -874,26 +874,21 @@ int main()
 { 
 
 
-    ll N, M; cin >> N >> M;
-    vvll adj(N);
-    rep(i,0,M) {
-        ll A, B; cin >> A >> B; 
-        A--; B--;
-        adj[A].push_back(B);
-        adj[B].push_back(A);
-    }
 
+    ll N; cin >> N;
+    string S; cin >> S;
+
+    vpll vec(N+1,{0,0});
     rep(i,0,N) {
-        map<ll,ll> mp;
-        mp[i]++;
-        for(auto u : adj[i]) {
-            mp[u]++;
-            for(auto v : adj[u]) {
-                mp[v]++;
-            }
-        }
-        cout << mp.size() - adj[i].size() - 1 << endl;
-    }    
+        vec[i+1] = vec[i];
+        if (S[i] == 'W') vec[i+1].first++;
+        else vec[i+1].second++;
+    }
+    ll mn = INF;
+    rep(i,1,N+1) {
+        chmin(mn, (vec[i-1].first) + (vec[N].second - vec[i].second));
+    }
+    cout << mn << endl;
 
 
     return 0;

@@ -81,14 +81,6 @@ void debug(vector<T> &G) {
     cout << endl;
 }  
 template <typename T, typename W>
-void debug(map<T,W> &mp) {
-    for (auto &u : mp) {
-        debug(u.first);
-        debug(u.second);
-        cout << endl;
-    }
-} 
-template <typename T, typename W>
 void debug(map<T, vector<W>> &mp) {
     for(auto &u : mp) {
         debug(u.first);
@@ -96,7 +88,7 @@ void debug(map<T, vector<W>> &mp) {
     }
 }
 template <typename T, typename U>
-void debug(map<T,U> mp) {
+void debug(map<T,U> &mp) {
     for(auto u : mp) cout << u.first << "," << u.second << "  ";
     cout << endl;
 }
@@ -111,7 +103,9 @@ void debug_s(vvll G) {
         debug(u);
     }
 }
-
+void debug_s(vector<string> G) {
+    for (auto u : G) cout << u << endl;
+}
 
 //stores X,Y s.t. AX + BY = gcd(A,B) and returns gcd(A,B)
 ll extGCD(ll A, ll B, ll &X, ll&Y) {
@@ -254,7 +248,9 @@ ll inf_check(vvll &to) {
 
 
 struct UnionFind {
+    private:
     vector<ll> par; 
+    public:
     UnionFind(ll N) : par(N) {
         rep(i,0,N) par[i]=i;
     }
@@ -870,30 +866,42 @@ ld log(T A,W B) {
     return log2(A)/logw(B);
 }
 
+
+
 int main()
 { 
 
 
-    ll N, M; cin >> N >> M;
-    vvll adj(N);
-    rep(i,0,M) {
-        ll A, B; cin >> A >> B; 
-        A--; B--;
-        adj[A].push_back(B);
-        adj[B].push_back(A);
-    }
+    ll N, T; cin >> N >> T;
+    vll vec(40,0);
+    rep(i,0,N) cin >> vec[i];
 
-    rep(i,0,N) {
-        map<ll,ll> mp;
-        mp[i]++;
-        for(auto u : adj[i]) {
-            mp[u]++;
-            for(auto v : adj[u]) {
-                mp[v]++;
+    vll L(1), R(1);
+    rep(i,0,1 << 20) {
+        ll sumL = 0, sumR = 0;
+        rep(j,0,20) {
+            if (i & (1 << j)) {
+                sumL += vec[j];
+                sumR += vec[j+20];
             }
         }
-        cout << mp.size() - adj[i].size() - 1 << endl;
-    }    
+        L.push_back(sumL);
+        R.push_back(sumR);
+    }
+    sort(all(L));
+    sort(all(R));
+    L.push_back(INF);
+    R.push_back(INF);
+
+
+    ll mx = 0;
+    rep(i,0,L.size()) {
+        if (L[i] > T) continue;
+        ll tmp = T - L[i];
+        ll tsum = upper_bound(all(R),tmp) - R.begin() - 1;
+        chmax(mx, L[i] + R[tsum]);
+    }
+    cout << mx << endl;
 
 
     return 0;

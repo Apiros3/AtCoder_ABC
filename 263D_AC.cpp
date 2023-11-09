@@ -81,14 +81,6 @@ void debug(vector<T> &G) {
     cout << endl;
 }  
 template <typename T, typename W>
-void debug(map<T,W> &mp) {
-    for (auto &u : mp) {
-        debug(u.first);
-        debug(u.second);
-        cout << endl;
-    }
-} 
-template <typename T, typename W>
 void debug(map<T, vector<W>> &mp) {
     for(auto &u : mp) {
         debug(u.first);
@@ -96,7 +88,7 @@ void debug(map<T, vector<W>> &mp) {
     }
 }
 template <typename T, typename U>
-void debug(map<T,U> mp) {
+void debug(map<T,U> &mp) {
     for(auto u : mp) cout << u.first << "," << u.second << "  ";
     cout << endl;
 }
@@ -111,7 +103,9 @@ void debug_s(vvll G) {
         debug(u);
     }
 }
-
+void debug_s(vector<string> G) {
+    for (auto u : G) cout << u << endl;
+}
 
 //stores X,Y s.t. AX + BY = gcd(A,B) and returns gcd(A,B)
 ll extGCD(ll A, ll B, ll &X, ll&Y) {
@@ -254,7 +248,9 @@ ll inf_check(vvll &to) {
 
 
 struct UnionFind {
+    private:
     vector<ll> par; 
+    public:
     UnionFind(ll N) : par(N) {
         rep(i,0,N) par[i]=i;
     }
@@ -870,31 +866,40 @@ ld log(T A,W B) {
     return log2(A)/logw(B);
 }
 
+ll bigncr(ll N, ll K) {
+    ll ret = 1;
+    rep(i,1,K+1) {
+        ret = (ret * (N+1-i))%MOD10;
+        // cout << ret << endl;
+
+        ret = (ret * modpow(i,MOD10-2,MOD10))%MOD10;
+        // cout << ret << endl;
+    }
+    
+    return ret;
+    
+}
+
+
 int main()
 { 
 
-
-    ll N, M; cin >> N >> M;
-    vvll adj(N);
-    rep(i,0,M) {
-        ll A, B; cin >> A >> B; 
-        A--; B--;
-        adj[A].push_back(B);
-        adj[B].push_back(A);
-    }
-
+    ll N, L, R; cin >> N >> L >> R;
+    vll A(N); input(A);
+    vll l(N+1,0), r(N+1);
     rep(i,0,N) {
-        map<ll,ll> mp;
-        mp[i]++;
-        for(auto u : adj[i]) {
-            mp[u]++;
-            for(auto v : adj[u]) {
-                mp[v]++;
-            }
-        }
-        cout << mp.size() - adj[i].size() - 1 << endl;
-    }    
-
+        l[i+1] = min(l[i] + A[i], (i+1)*L);
+    }
+    rep(i,0,N) {
+        r[N-1-i] = min(r[N-i] + A[N-1-i], (i+1)*R);
+    }
+    ll mn = INF;
+    rep(i,0,N+1) {
+        chmin(mn, l[i] + r[i]);
+    }
+    // debug(l);
+    // debug(r);
+    cout << mn << endl;
 
     return 0;
 }     

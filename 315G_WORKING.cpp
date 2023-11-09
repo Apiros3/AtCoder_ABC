@@ -28,12 +28,10 @@ ll MOD9 = 998244353LL;
 ll MOD10 = 1000000007LL;
 // ld MEPS = pow(10,-8);
 
-template <typename T>
-void input(vector<T> &G) {
+void input(vll &G) {
     rep(i,0,G.size()) cin >> G[i];
 }
-template <typename T, typename W>
-void input(vector<T> &G, vector<W> &H) {
+void input(vll &G, vll &H) {
     rep(i,0,G.size()) cin >> G[i] >> H[i];
 }
 
@@ -42,67 +40,22 @@ void add(vector<T> &A, vector<T> B) {
     A.insert(A.end(),all(B));
 }
 
-ll popcount(ll X) {
-    return __builtin_popcount(X);
-}
-
-
-void debug(int &G) {
-    cout << G << " ";
-}
-void debug(long &G) {
-    cout << G << " ";
-}
-void debug(ll &G) {
-    cout << G << " ";
-}
-void debug(float &G) {
-    cout << G << " ";
-}
-void debug(double &G) {
-    cout << G << " ";
-}
-void debug(ld &G) {
-    cout << G << " ";
-}
-void debug(string &G) {
-    cout << G << " ";
-}
-template <typename T, typename W>
-void debug(pair<T,W> &u) {
-    debug(u.first);
-    cout << ",";
-    debug(u.second);
-    cout << " ";
-}
-template <typename T>
-void debug(vector<T> &G) {
-    for (auto &u : G) debug(u);
-    cout << endl;
-}  
-template <typename T, typename W>
-void debug(map<T,W> &mp) {
-    for (auto &u : mp) {
-        debug(u.first);
-        debug(u.second);
-        cout << endl;
-    }
-} 
-template <typename T, typename W>
-void debug(map<T, vector<W>> &mp) {
-    for(auto &u : mp) {
-        debug(u.first);
-        debug(u.second);
-    }
-}
-template <typename T, typename U>
-void debug(map<T,U> mp) {
-    for(auto u : mp) cout << u.first << "," << u.second << "  ";
+void debug(vll G) {
+    for(auto u : G) cout << u << " ";
     cout << endl;
 }
 void debug_s(vll G) {
     cout << G.size() << endl;
     debug(G);
+}
+void debug(vpll G) {
+    for(auto u : G) cout << u.first << "," << u.second << "  ";
+    cout << endl;
+}
+void debug(vvll G) {
+    for(auto u : G) {
+        debug(u);
+    }
 }
 void debug_s(vvll G) {
     cout << G.size() << endl;
@@ -111,9 +64,13 @@ void debug_s(vvll G) {
         debug(u);
     }
 }
+void debug(vvpll G) {
+    for(auto u : G) {
+        for(auto v : u) cout << v.first << "," << v.second << "  ";
+        cout << endl;
+    }
+}
 
-
-//stores X,Y s.t. AX + BY = gcd(A,B) and returns gcd(A,B)
 ll extGCD(ll A, ll B, ll &X, ll&Y) {
     if (B==0) {
         X = 1; Y = 0; 
@@ -123,12 +80,12 @@ ll extGCD(ll A, ll B, ll &X, ll&Y) {
     Y -= A/B*X; 
     return D;
 }
-ll invmod(ll inv, ll mod) {
-    ll X, Y;
-    assert(extGCD(inv,mod,X,Y) == 1);
-    return X;
-}
 
+template <typename T, typename U>
+void debug(map<T,U> mp) {
+    for(auto u : mp) cout << u.first << "," << u.second << "  ";
+    cout << endl;
+}
 void yesno(bool check) {
     if (check) cout << "Yes" << endl;
     else cout << "No" << endl;
@@ -140,20 +97,9 @@ ull modpow(ull btmn, ull topn, ull mod) {
     for(; topn; topn /= 2, btmn = (btmn*btmn)%mod) 
         if (topn & 1) ret = (ret*btmn)%mod; 
     return ret;
-}
-ull modmul(ull a, ull b, ull M) {
-    ll ret = a * b - M * ull(1.L / M * a * b);
-    return ret + M * (ret < 0) - M * (ret >= (ll)M);
-}
-ull modpow_s(ull btmn, ull topn, ull modn) {
-    ll ret_num = 1;
-    btmn%=modn;
-    for(; topn; topn/=2, btmn=modmul(btmn,btmn,modn))
-        if (topn & 1) ret_num=modmul(ret_num,btmn,modn);
-    return ret_num%modn;
 } 
 ll intpow(ll btmn, ll topn) {
-    return modpow_s(btmn, topn, INF);
+    return modpow(btmn, topn, INF);
 }
 ll gcd(ll L, ll R) {
     if (R==0) return L; 
@@ -342,6 +288,17 @@ struct Modulo {
 
 }mod9(MOD9), mod10(MOD10);
 
+ull modmul(ull a, ull b, ull M) {
+    ll ret = a * b - M * ull(1.L / M * a * b);
+    return ret + M * (ret < 0) - M * (ret >= (ll)M);
+}
+ull modpow_s(ull btmn, ull topn, ull modn) {
+    ll ret_num = 1;
+    btmn%=modn;
+    for(; topn; topn/=2, btmn=modmul(btmn,btmn,modn))
+        if (topn & 1) ret_num=modmul(ret_num,btmn,modn);
+    return ret_num%modn;
+}
 bool isPrime(ll n) {
     if (n < 2 || n % 6 % 4 != 1) return (n | 1) == 3;
     ull A[] = {2, 325, 9375, 28178, 450775, 9780504, 1795265022},
@@ -566,67 +523,6 @@ struct general_dfs {
     }
 };
 
-struct LCA {
-    public:
-    LCA (vvll adj, ll root = 0) {
-        init(adj, root);
-    }
-    ll lca_query(ll u, ll v) {
-        if (dist[u] < dist[v]) swap(u, v);  //set s.t. u is deeper
-        ll K = parent.size();
-        //set distance to the same as the LCA
-        rep(k,0,K) {
-            if (((dist[u] - dist[v]) >> k) & 1) {
-                u = parent[k][u];
-            }
-        }
-        //find lca via binary search
-        if (u == v) return u;
-        rrep(k,K-1,0) {
-            if (parent[k][u] != parent[k][v]) {
-                u = parent[k][u];
-                v = parent[k][v];
-            }
-        }
-        return parent[0][u];
-    }
-    ll dist_query(ll u, ll v) {
-        ll lca = lca_query(u,v);
-        return dist[u] + dist[v] - 2*dist[lca];
-    }
-
-    private:    
-    vvll parent;
-    vll dist;
-
-    void init(vvll &G, ll root = 0)  {
-        ll V = G.size();
-        ll K = 1;
-        while ((1 << K) < V) K++;
-        parent.assign(K, vll(V, -1));
-        dist.assign(V, -1);
-        dfs(G, root, -1, 0);
-        // debug(dist);
-        rep(k,0,K-1) {
-            rep(v,0,V) {
-                if (parent[k][v] < 0) {
-                    parent[k + 1][v] = -1;
-                } else {
-                    parent[k + 1][v] = parent[k][parent[k][v]];
-                }
-            }
-        }
-    }
-    void dfs(vvll &G, ll v, ll p, ll d) {
-        parent[0][v] = p;
-        dist[v] = d;
-        for (auto e : G[v]) {
-            if (e != p) dfs(G, e, v, d + 1);
-        }
-    }
-
-    
-};
 
 struct enum_primes {
     vector<ll> Prime_list;
@@ -758,7 +654,7 @@ vll LIS_N(vll G) {
 vvpll factorization(ll N, ll mn) {
     vvpll vec;
     if (N < mn) return vec;
-    for(ll i = mn; i*i <= N; ++i) {
+    for(int i = mn; i*i <= N; ++i) {
         ll cnt = 0, tmp = N;
         while (tmp%i == 0) {
             cnt++; tmp /= i;
@@ -819,10 +715,6 @@ ll FF(vector<map<ll,ll>> &adj, ll source, ll target) {
     return mx;
 }
 
-ll modrecip(ll recip, ll mod) {
-    return modpow(recip,mod-2,mod);
-}
-
 
 struct Init {
     Init() {
@@ -859,42 +751,37 @@ pll findseg(ll beg, ll step, ll start, ll end) {
 
 }
 
-ll stoll(char X) {
-    string str = "";
-    str += X;
-    return stoll(str);
-}
-
-template <typename T, typename W>
-ld log(T A,W B) {
-    return log2(A)/logw(B);
-}
-
 int main()
 { 
 
+    ll N, A, B, C, X; cin >> N >> A >> B >> C >> X;
+    ll cnt = 0;
+    ll TX, TY;
+    extGCD(B/gcd(B,C), C/gcd(B,C), TX, TY);
+    ll tmj = C/gcd(B,C), tmk = -(B/gcd(B,C));
+    // cout << tmj << " " << tmk << endl;
+    rep(i,1,N+1) {
+        if ((X-A*i)%gcd(B,C) != 0) continue;
+        ll tmp = (X - A*i)/gcd(B,C);
+        ll TX, TY;
+        extGCD(B/gcd(B,C), C/gcd(B,C), TX, TY);
+        ll Tj = TX*tmp, Tk = TY*tmp; 
 
-    ll N, M; cin >> N >> M;
-    vvll adj(N);
-    rep(i,0,M) {
-        ll A, B; cin >> A >> B; 
-        A--; B--;
-        adj[A].push_back(B);
-        adj[B].push_back(A);
+
+        //Tj*B + Tk*C = (X-Ai)
+        // cout << i << " " << Tj << " " << Tk << endl;
+
+        //find x s.t. 1 <= Tj+x*tmj <= N
+        auto ttj = findseg(Tj,tmj,1,N);
+        auto ttk = findseg(Tk,tmk,1,N);
+        if (ttj.first > ttj.second) swap(ttj.first,ttj.second);
+        if (ttk.first > ttk.second) swap(ttk.first,ttk.second);
+
+        // cout << ttj.first << " " << ttj.second << " " << ttk.first << " " << ttk.second << endl;
+
+        cnt += max(0ll, min(ttj.second,ttk.second) - max(ttj.first,ttk.first) + 1);
     }
-
-    rep(i,0,N) {
-        map<ll,ll> mp;
-        mp[i]++;
-        for(auto u : adj[i]) {
-            mp[u]++;
-            for(auto v : adj[u]) {
-                mp[v]++;
-            }
-        }
-        cout << mp.size() - adj[i].size() - 1 << endl;
-    }    
-
+    cout << cnt << endl;
 
     return 0;
 }     

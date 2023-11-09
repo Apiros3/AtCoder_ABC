@@ -81,14 +81,6 @@ void debug(vector<T> &G) {
     cout << endl;
 }  
 template <typename T, typename W>
-void debug(map<T,W> &mp) {
-    for (auto &u : mp) {
-        debug(u.first);
-        debug(u.second);
-        cout << endl;
-    }
-} 
-template <typename T, typename W>
 void debug(map<T, vector<W>> &mp) {
     for(auto &u : mp) {
         debug(u.first);
@@ -96,7 +88,7 @@ void debug(map<T, vector<W>> &mp) {
     }
 }
 template <typename T, typename U>
-void debug(map<T,U> mp) {
+void debug(map<T,U> &mp) {
     for(auto u : mp) cout << u.first << "," << u.second << "  ";
     cout << endl;
 }
@@ -111,7 +103,9 @@ void debug_s(vvll G) {
         debug(u);
     }
 }
-
+void debug_s(vector<string> G) {
+    for (auto u : G) cout << u << endl;
+}
 
 //stores X,Y s.t. AX + BY = gcd(A,B) and returns gcd(A,B)
 ll extGCD(ll A, ll B, ll &X, ll&Y) {
@@ -254,7 +248,9 @@ ll inf_check(vvll &to) {
 
 
 struct UnionFind {
+    private:
     vector<ll> par; 
+    public:
     UnionFind(ll N) : par(N) {
         rep(i,0,N) par[i]=i;
     }
@@ -870,31 +866,38 @@ ld log(T A,W B) {
     return log2(A)/logw(B);
 }
 
+
+
 int main()
 { 
 
 
     ll N, M; cin >> N >> M;
-    vvll adj(N);
+    vvpll adj(N+1);
+    ll sum = 0, tsum = 0;
     rep(i,0,M) {
-        ll A, B; cin >> A >> B; 
-        A--; B--;
-        adj[A].push_back(B);
-        adj[B].push_back(A);
+        ll A, B, C; cin >> A >> B >> C;
+        if (C > 0)
+            tsum += C;
+        adj[A].emplace_back(C,B);
+        adj[B].emplace_back(C,A);
     }
-
-    rep(i,0,N) {
-        map<ll,ll> mp;
-        mp[i]++;
-        for(auto u : adj[i]) {
-            mp[u]++;
-            for(auto v : adj[u]) {
-                mp[v]++;
-            }
+    vll used(N+1,0);
+    used[1] = 1;
+    priority_queue<pll,vector<pll>,greater<pll>> que;
+    for(auto u : adj[1]) que.push(u);
+    while(!que.empty()) {
+        auto top = que.top(); que.pop();
+        if (used[top.second]) {
+            continue;
         }
-        cout << mp.size() - adj[i].size() - 1 << endl;
-    }    
+        used[top.second] = 1;
+        if (top.first > 0)
+            sum += top.first;
+        for(auto u : adj[top.second]) que.push(u);
+    }
+    cout << tsum - sum << endl;
 
-
+    
     return 0;
 }     

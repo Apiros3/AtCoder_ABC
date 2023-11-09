@@ -1,11 +1,581 @@
 #include <bits/stdc++.h>
-using namespace std;
 
-// #pragma GCC target ("avx2")
-// #pragma GCC optimization ("O3")
-// #pragma GCC optimization ("unroll-loops")
+#pragma GCC target ("avx2")
+#pragma GCC optimization ("O3")
+#pragma GCC optimization ("unroll-loops")
 
 // #APIROS3 TEMPLATE FROM HERE
+// PART 1: OVERLOADS / MINT
+
+template<typename T, typename W>
+std::pair<T,W>& operator +=(std::pair<T,W> &lhs, const std::pair<T,W> &rhs) {
+    lhs.first += rhs.first;
+    lhs.second += rhs.second;
+}
+template<typename T, typename W>
+std::pair<T,W> operator +(std::pair<T,W> lhs, const std::pair<T,W> &rhs) {
+    return lhs += rhs;
+}
+template<typename T, typename W>
+std::pair<T,W>& operator -=(std::pair<T,W> &lhs, const std::pair<T,W> &rhs) {
+    lhs.first -= rhs.first;
+    lhs.second -= rhs.second;
+}
+template<typename T, typename W>
+std::pair<T,W> operator -(std::pair<T,W> lhs, const std::pair<T,W> &rhs) {
+    return lhs -= rhs;
+}
+template<typename T, typename W>
+std::pair<T,W>& operator *=(std::pair<T,W> &lhs, const std::pair<T,W> &rhs) {
+    lhs.first *= rhs.first;
+    lhs.second *= rhs.second;
+}
+template<typename T, typename W>
+std::pair<T,W> operator *(std::pair<T,W> lhs, const std::pair<T,W> &rhs) {
+    return lhs *= rhs;
+}
+template<typename T, typename W>
+std::pair<T,W>& operator /=(std::pair<T,W> &lhs, const std::pair<T,W> &rhs) {
+    lhs.first /= rhs.first;
+    lhs.second /= rhs.second;
+}
+template<typename T, typename W>
+std::pair<T,W> operator /(std::pair<T,W> lhs, const std::pair<T,W> &rhs) {
+    return lhs /= rhs;
+}
+
+template<typename T>
+std::vector<T>& operator +=(std::vector<T> &lhs, const std::vector<T> &rhs) {
+    if (lhs.size() != rhs.size()) {
+        throw std::length_error("vectors must be same size to add");
+    }
+    for(int i = 0; i < lhs.size(); ++i) {
+        lhs[i] += rhs[i];
+    }
+    return lhs;
+}
+template<typename T>
+std::vector<T> operator +(std::vector<T> lhs, const std::vector<T> &rhs) {
+    return lhs += rhs;
+}
+template<typename T>
+std::vector<T>& operator -=(std::vector<T> &lhs, const std::vector<T> &rhs) {
+    if (lhs.size() != rhs.size()) {
+        throw std::length_error("vectors must be same size to subtract");
+    }
+    for(int i = 0; i < lhs.size(); ++i) {
+        lhs[i] -= rhs[i];
+    }
+    return lhs;
+}
+template<typename T>
+std::vector<T> operator -(std::vector<T> lhs, const std::vector<T> &rhs) {
+    return lhs -= rhs;
+}
+template<typename T>
+std::vector<T>& operator *=(std::vector<T> &lhs, const std::vector<T> &rhs) {
+    if (lhs.size() != rhs.size()) {
+        throw std::length_error("vectors must be same size to multiply");
+    }
+    for(int i = 0; i < lhs.size(); ++i) {
+        lhs[i] *= rhs[i];
+    }
+    return lhs;
+}
+template<typename T>
+std::vector<T> operator *(std::vector<T> lhs, const std::vector<T> &rhs) {
+    return lhs *= rhs;
+}
+template<typename T>
+std::vector<T>& operator /=(std::vector<T> &lhs, const std::vector<T> &rhs) {
+    if (lhs.size() != rhs.size()) {
+        throw std::length_error("vectors must be same size to divide");
+    }
+    for(int i = 0; i < lhs.size(); ++i) {
+        lhs[i] /= rhs[i];
+    }
+    return lhs;
+}
+template<typename T>
+std::vector<T> operator /(std::vector<T> lhs, const std::vector<T> &rhs) {
+    return lhs /= rhs;
+}
+
+template<typename T>
+std::vector<T>& operator +=(std::vector<T> &lhs, const T& rhs) {
+    for(int i = 0; i < lhs.size(); ++i) {
+        lhs[i] += rhs;
+    }
+    return lhs;
+}
+template<typename T>
+std::vector<T> operator +(std::vector<T> lhs, const T& rhs) {
+    return lhs += rhs;
+}
+template<typename T>
+std::vector<T>& operator -=(std::vector<T> &lhs, const T& rhs) {
+    for(int i = 0; i < lhs.size(); ++i) {
+        lhs[i] -= rhs;
+    }
+    return lhs;
+}
+template<typename T>
+std::vector<T> operator -(std::vector<T> lhs, const T& rhs) {
+    return lhs -= rhs;
+}
+template<typename T>
+std::vector<T>& operator *=(std::vector<T> &lhs, const T& rhs) {
+    for(int i = 0; i < lhs.size(); ++i) {
+        lhs[i] *= rhs;
+    }
+    return lhs;
+}
+template<typename T>
+std::vector<T> operator *(std::vector<T> lhs, const T& rhs) {
+    return lhs *= rhs;
+}
+template<typename T>
+std::vector<T>& operator /=(std::vector<T> &lhs, const T& rhs) {
+    for(int i = 0; i < lhs.size(); ++i) {
+        lhs[i] /= rhs;
+    }
+    return lhs;
+}
+template<typename T>
+std::vector<T> operator /(std::vector<T> lhs, const T& rhs) {
+    return lhs /= rhs;
+}
+template<typename T>
+std::vector<T>& operator %=(std::vector<T> &lhs, const T& rhs) {
+    for(int i = 0; i < lhs.size(); ++i) {
+        lhs[i] %= rhs;
+    }
+    return lhs;
+}
+template<typename T>
+std::vector<T> operator %(std::vector<T> lhs, const T& rhs) {
+    return lhs %= rhs;
+}
+
+long long mintmod = 998244353;
+class mint {
+private:
+    long long x;
+    long long modmul(long long a, long long b, long long M) {
+        long long ret = a * b - M * (unsigned long long)(1.L / M * a * b);
+        return ret + M * (ret < 0) - M * (ret >= (long long)M);
+    }
+    long long modpow_s(long long btmn, long long topn, long long modn) {
+        long long ret_num = 1;
+        btmn%=modn;
+        for(; topn; topn/=2, btmn=modmul(btmn,btmn,modn))
+            if (topn & 1ll) ret_num=modmul(ret_num,btmn,modn);
+        return ret_num%modn;
+    } 
+public:
+    mint(long long x = 0) : x((x%mintmod + mintmod)%mintmod) {}
+    mint operator-() const {
+        return mint(-x);
+    }
+    mint& operator+=(const mint& a) {
+        if ((x += a.x) >= mintmod) x -= mintmod;
+        return *this;
+    }
+    mint& operator-=(const mint& a) {
+        if ((x += mintmod - a.x) >= mintmod) x -= mintmod;
+        return *this;
+    }
+    mint& operator*=(const mint& a) {
+        x = modmul(x, a.x, mintmod);
+        return *this;
+    }
+    mint operator+(const mint& a) const {
+        mint res(*this);
+        return res += a;
+    }
+    mint operator-(const mint& a) const {
+        mint res(*this);
+        return res -= a;
+    }
+    mint operator*(const mint& a) const {
+        mint res(*this);
+        return res *= a;
+    }
+    template<typename T>
+    mint pow(T t) const {
+        if (!t) return 1;
+        mint a = pow(t >> 1);
+        a *= a;
+        if (t & 1) a *= *this;
+        return a;
+    }
+    mint inv() const {
+        return pow(mintmod-2);
+    }
+    mint& operator/=(const mint& a) {
+        return (*this) *= a.inv();
+    }
+    mint operator/(const mint& a) const {
+        mint res(*this);
+        return res/=a;
+    }
+
+    mint operator==(const mint& a) {
+        return (*this).x == a.x;
+    }
+    template <typename T>
+    mint operator==(const T &a) {
+        return (*this).x == a;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const mint& m) {
+        os << m.x;
+        return os;
+    }
+};
+
+
+class bigint {
+private:
+    //from smaller digits
+    std::vector<long long> x;
+    bool positive = true;
+    long long mod = 1000000000;
+    void reformat() {
+        while(x.back() == 0) x.pop_back();
+    }
+    void add(const bigint& a) {
+        long long forward = 0;
+        x.resize(std::max(x.size(),a.x.size())+1,0); 
+        for(int i = 0; i < a.x.size(); i++) {
+            x[i] += a.x[i] + forward;
+            forward = x[i] / mod;
+            x[i] %= mod;
+        }
+        long long cur = a.x.size();
+        while(forward) {
+            x[cur] += forward;
+            forward = x[cur] / mod;
+            x[cur] %= mod;
+        }
+        reformat();
+    }
+    void subtract(const bigint& a) {
+        long long forward = 0;
+        x.resize(std::max(x.size(),a.x.size())+1,0); 
+        for(int i = 0; i < a.x.size(); i++) {
+            x[i] -= a.x[i];
+        }
+        for(int i = 0; i < x.size()-1; i++) {
+            x[i] += forward;
+            if (x[i] < 0) {
+                x[i+1]--;
+                x[i] += mod;
+            }
+            forward = x[i] / mod;
+            x[i] %= mod;
+        }
+        x.back() += forward;
+        if (x.back() == -1) {
+            x.back() = 0;
+            positive = !positive;
+            for(int i = 0; i < x.size()-1; i++) {
+                if (i == 0) {
+                    x[i] = mod - x[i];
+                }
+                else {
+                    x[i] = mod - x[i] - 1;
+                }
+            }
+        }
+        reformat();
+    }
+public:
+    bigint(std::string num = "0") {
+        if (num[0] == '-') {
+            positive = false;
+        }
+        for(int i = num.size()-9; i > -9; i-=9) {
+            std::string str = "";
+            for(int j = 0; j < 9; j++) {
+                if (i+j < 0 || num[i+j] == '-') continue;
+                str += num[i+j];
+            }
+            if (str == "") continue;
+            x.push_back(stoll(str));
+        }
+    }
+    bigint operator-() const {
+        bigint res(*this);
+        res.positive = !res.positive;
+        return res;
+    }
+    
+    bigint& operator+=(const bigint& a) {
+        if((positive && a.positive) || (!positive && !a.positive)) {
+            add(a);
+        }
+        else {
+            subtract(a);
+        }
+        return *this;
+    }
+    bigint& operator-=(const bigint& a) {
+        if ((positive && a.positive) || (!positive && !a.positive)) {
+            subtract(a);
+        }
+        else {
+            add(a);
+        }
+        return *this;
+    }
+    bigint operator+(const bigint& a) const {
+        bigint res(*this);
+        return res += a;
+    }
+    bigint operator-(const bigint& a) const {
+        bigint res(*this);
+        return res -= a;
+    }
+
+
+    // mint& operator*=(const mint& a) {
+    //     x = modmul(x, a.x, mintmod);
+    //     return *this;
+    // }
+    // mint operator*(const mint& a) const {
+    //     mint res(*this);
+    //     return res *= a;
+    // }
+    // template<typename T>
+    // mint pow(T t) const {
+    //     if (!t) return 1;
+    //     mint a = pow(t >> 1);
+    //     a *= a;
+    //     if (t & 1) a *= *this;
+    //     return a;
+    // }
+    // mint inv() const {
+    //     return pow(mintmod-2);
+    // }
+    // mint& operator/=(const mint& a) {
+    //     return (*this) *= a.inv();
+    // }
+    // mint operator/(const mint& a) const {
+    //     mint res(*this);
+    //     return res/=a;
+    // }
+
+    // mint operator==(const mint& a) {
+    //     return (*this).x == a.x;
+    // }
+    // template <typename T>
+    // mint operator==(const T &a) {
+    //     return (*this).x == a;
+    // }
+
+
+    friend std::ostream& operator<<(std::ostream& os, const bigint& num) {
+        if (num.x.empty()) {
+            os << 0;
+            return os;
+        }
+        size_t n = 9;
+        if (!num.positive) {
+            os << "-";
+        }
+        for(auto it = num.x.rbegin(); it != num.x.rend(); it++) {
+            if (it == num.x.rbegin()) {
+                os << (*it);
+            }
+            else {
+                os << std::string(n - std::min(n,   std::to_string(*it).size()), '0') << (*it);
+            }
+        }
+        return os;
+    }
+};
+
+class frac {
+private:
+    long long num, den;
+    long double check;
+    long double eps = 1e-8;
+
+    long long gcd(long long L, long long R) {
+        if (R == 0) return L; 
+        return gcd(R, L%R);
+    }
+    long long lcm(long long L, long long R) {
+        return L/gcd(R, L)*R;
+    }
+public:
+    frac(long long top = 0, long long bot = 1) : num(top), den(bot) {
+        assert(bot > 0);
+        check = (long double)top/den;
+    }
+    frac operator-() const {
+        return frac(-num,den);
+    }
+    frac& operator+=(const frac &a) {
+        long long newden = lcm(den, a.den);
+        num = newden/den * num + newden/a.den * a.num;
+        den = newden;
+        check += a.check;
+        return *this;
+    }
+
+
+//     mint& operator-=(const mint& a) {
+//         if ((x += mintmod - a.x) >= mintmod) x -= mintmod;
+//         return *this;
+//     }
+//     mint& operator*=(const mint& a) {
+//         x = modmul(x, a.x, mintmod);
+//         return *this;
+//     }
+//     mint operator+(const mint& a) const {
+//         mint res(*this);
+//         return res += a;
+//     }
+//     mint operator-(const mint& a) const {
+//         mint res(*this);
+//         return res -= a;
+//     }
+//     mint operator*(const mint& a) const {
+//         mint res(*this);
+//         return res *= a;
+//     }
+//     template<typename T>
+//     mint pow(T t) const {
+//         if (!t) return 1;
+//         mint a = pow(t >> 1);
+//         a *= a;
+//         if (t & 1) a *= *this;
+//         return a;
+//     }
+//     mint inv() const {
+//         return pow(mintmod-2);
+//     }
+//     mint& operator/=(const mint& a) {
+//         return (*this) *= a.inv();
+//     }
+//     mint operator/(const mint& a) const {
+//         mint res(*this);
+//         return res/=a;
+//     }
+
+//     mint operator==(const mint& a) {
+//         return (*this).x == a.x;
+//     }
+//     template <typename T>
+//     mint operator==(const T &a) {
+//         return (*this).x == a;
+//     }
+
+//     friend std::ostream& operator<<(std::ostream& os, const mint& m) {
+//         os << m.x;
+//         return os;
+//     }
+};
+
+
+// PART 2: FOR DEBUGGING
+
+void debug(int &G) {
+    std::cout << G << " ";
+}
+void debug(long &G) {
+    std::cout << G << " ";
+}
+void debug(long long &G) {
+    std::cout << G << " ";
+}
+void debug(const long long int &G) {
+    std::cout << G << " ";
+}
+void debug(float &G) {
+    std::cout << G << " ";
+}
+void debug(double &G) {
+    std::cout << G << " ";
+}
+void debug(long double &G) {
+    std::cout << G << " ";
+}
+void debug(std::string &G) {
+    std::cout << G << " ";
+}
+template <typename T, typename W>
+void debug(std::pair<T,W> &u) {
+    debug(u.first);
+    std::cout << ",";
+    debug(u.second);
+    std::cout << " ";
+}
+template <typename T>
+void debug(std::vector<T> &G) {
+    for (auto &u : G) debug(u);
+    std::cout << std::endl;
+}  
+template <typename T>
+void debug_ne(std::vector<T> &G) {
+    for (auto &u : G) debug(u);
+}  
+template <typename T>
+void debug_e(std::vector<T> &G) {
+    for (auto &u : G) {
+        debug(u);
+        std::cout << std::endl;
+    }
+}  
+template <typename T, typename W>
+void debug(std::map<std::vector<T>, std::vector<W>> &mp) {
+    for(auto &u : mp) {
+        debug_ne(u.first);
+        std::cout << ": ";
+        debug(u.second);
+    }
+}
+template <typename T, typename W>
+void debug(std::map<T, std::vector<W>> &mp) {
+    for(auto &u : mp) {
+        debug(u.first);
+        std::cout << ": ";
+        debug(u.second);
+    }
+}
+template <typename T, typename W>
+void debug(std::map<std::vector<T>, W> &mp) {
+    for(auto &u : mp) {
+        debug_e(u.first);
+        std::cout << ": ";
+        debug(u.second);
+        std::cout << std::endl;
+    }
+}
+template <typename T, typename U>
+void debug(std::map<T,U> &mp) {
+    for(auto u : mp) std::cout << u.first << "," << u.second << "  ";
+    std::cout << std::endl;
+}
+template <typename T>
+void debug_s(std::vector<std::vector<T>> &G) {
+    std::cout << G.size() << std::endl;
+    for(auto u : G) {
+        std::cout << u.size() << " ";
+        debug(u);
+    }
+}
+template <typename T>
+void debug_s(std::vector<T> &G) {
+    std::cout << G.size() << std::endl;
+    debug(G);
+}
+
+
+// PART 3: NEW FUNCTIONS
+using namespace std;
 using ll = long long;
 using ld = long double;
 using ull = unsigned long long;
@@ -16,6 +586,7 @@ using vvvll = vector<vvll>;
 using vpll = vector<pll>;
 using vvpll = vector<vpll>;
 using vvvpll = vector<vvpll>;
+using vs = vector<string>;
 
 #define rep(i,start,end) for(ll i=start; i<end; i++)
 #define rrep(i,start,end) for(ll i=start; i>=end; i--)
@@ -38,7 +609,7 @@ void input(vector<T> &G, vector<W> &H) {
 }
 
 template <typename T>
-void add(vector<T> &A, vector<T> B) {
+void append(vector<T> &A, vector<T> B) {
     A.insert(A.end(),all(B));
 }
 
@@ -46,71 +617,6 @@ ll popcount(ll X) {
     return __builtin_popcount(X);
 }
 
-
-void debug(int &G) {
-    cout << G << " ";
-}
-void debug(long &G) {
-    cout << G << " ";
-}
-void debug(ll &G) {
-    cout << G << " ";
-}
-void debug(float &G) {
-    cout << G << " ";
-}
-void debug(double &G) {
-    cout << G << " ";
-}
-void debug(ld &G) {
-    cout << G << " ";
-}
-void debug(string &G) {
-    cout << G << " ";
-}
-template <typename T, typename W>
-void debug(pair<T,W> &u) {
-    debug(u.first);
-    cout << ",";
-    debug(u.second);
-    cout << " ";
-}
-template <typename T>
-void debug(vector<T> &G) {
-    for (auto &u : G) debug(u);
-    cout << endl;
-}  
-template <typename T, typename W>
-void debug(map<T,W> &mp) {
-    for (auto &u : mp) {
-        debug(u.first);
-        debug(u.second);
-        cout << endl;
-    }
-} 
-template <typename T, typename W>
-void debug(map<T, vector<W>> &mp) {
-    for(auto &u : mp) {
-        debug(u.first);
-        debug(u.second);
-    }
-}
-template <typename T, typename U>
-void debug(map<T,U> mp) {
-    for(auto u : mp) cout << u.first << "," << u.second << "  ";
-    cout << endl;
-}
-void debug_s(vll G) {
-    cout << G.size() << endl;
-    debug(G);
-}
-void debug_s(vvll G) {
-    cout << G.size() << endl;
-    for(auto u : G) {
-        cout << u.size() << " ";
-        debug(u);
-    }
-}
 
 
 //stores X,Y s.t. AX + BY = gcd(A,B) and returns gcd(A,B)
@@ -132,6 +638,11 @@ ll invmod(ll inv, ll mod) {
 void yesno(bool check) {
     if (check) cout << "Yes" << endl;
     else cout << "No" << endl;
+}
+
+ll infq(ll query) {
+    if (query == INF) return -1;
+    return query;
 }
 
 ull modpow(ull btmn, ull topn, ull mod) {
@@ -254,7 +765,9 @@ ll inf_check(vvll &to) {
 
 
 struct UnionFind {
+    private:
     vector<ll> par; 
+    public:
     UnionFind(ll N) : par(N) {
         rep(i,0,N) par[i]=i;
     }
@@ -342,6 +855,12 @@ struct Modulo {
 
 }mod9(MOD9), mod10(MOD10);
 
+// struct Modulo_s {
+
+
+
+// }
+
 bool isPrime(ll n) {
     if (n < 2 || n % 6 % 4 != 1) return (n | 1) == 3;
     ull A[] = {2, 325, 9375, 28178, 450775, 9780504, 1795265022},
@@ -354,6 +873,10 @@ bool isPrime(ll n) {
     }
     return 1;
 }
+
+
+
+
 
 vector<ll> bfs_uw1_adj(vector<vector<ll>> adj, ll start) {
     vector<ll> dist(adj.size(),INF);
@@ -765,7 +1288,7 @@ vvpll factorization(ll N, ll mn) {
             auto tmvec = factorization(tmp,i+1);
             for(auto &u : tmvec) u.push_back({i,cnt});
             if (tmp == 1) tmvec.push_back(vpll{{i,cnt}});
-            add(vec,tmvec);
+            append(vec,tmvec);
         }
     }
     vec.push_back(vpll{{N,1}});
@@ -774,50 +1297,50 @@ vvpll factorization(ll N, ll mn) {
 }
 
 
-bool tbfs(vector<map<ll,ll>> &adj, ll s, ll t, vll &par) {
-    ll N = adj.size();
-    vll visited(N,0);
-    queue<ll> que;
-    que.push(s);
-    visited[s] = 1;
-    par[s] = -1;
-    while(!que.empty()) {
-        ll u = que.front();
-        que.pop();
-        for(auto v : adj[u]) {
-            if (!visited[v.first]) {
-                if (v.first == t) {
-                    par[v.first] = u;
-                    return true; 
-                }
-                que.push(v.first);
-                par[v.first] = u;
-                visited[v.first] = true;
-            }
-        }
-    }
-    return false;
-}
+// bool tbfs(vector<map<ll,ll>> &adj, ll s, ll t, vll &par) {
+//     ll N = adj.size();
+//     vll visited(N,0);
+//     queue<ll> que;
+//     que.push(s);
+//     visited[s] = 1;
+//     par[s] = -1;
+//     while(!que.empty()) {
+//         ll u = que.front();
+//         que.pop();
+//         for(auto v : adj[u]) {
+//             if (!visited[v.first]) {
+//                 if (v.first == t) {
+//                     par[v.first] = u;
+//                     return true; 
+//                 }
+//                 que.push(v.first);
+//                 par[v.first] = u;
+//                 visited[v.first] = true;
+//             }
+//         }
+//     }
+//     return false;
+// }
 
 
-ll FF(vector<map<ll,ll>> &adj, ll source, ll target) {
-    ll N = adj.size();
-    vll parent(N);
-    ll mx = 0;
-    while(tbfs(adj,source,target,parent)) {
-        for(ll v = target; v != source; v = parent[v]) {
-            ll u = parent[v];
-            adj[u][v]--;
-            adj[v][u]++;
-            if (adj[u][v] == 0) {
-                adj[u].erase(v);
-            }
-        }
+// ll FF(vector<map<ll,ll>> &adj, ll source, ll target) {
+//     ll N = adj.size();
+//     vll parent(N);
+//     ll mx = 0;
+//     while(tbfs(adj,source,target,parent)) {
+//         for(ll v = target; v != source; v = parent[v]) {
+//             ll u = parent[v];
+//             adj[u][v]--;
+//             adj[v][u]++;
+//             if (adj[u][v] == 0) {
+//                 adj[u].erase(v);
+//             }
+//         }
 
-        mx++;
-    }
-    return mx;
-}
+//         mx++;
+//     }
+//     return mx;
+// }
 
 ll modrecip(ll recip, ll mod) {
     return modpow(recip,mod-2,mod);
@@ -870,31 +1393,37 @@ ld log(T A,W B) {
     return log2(A)/logw(B);
 }
 
+ll bigncr(ll N, ll K) {
+    ll ret = 1;
+    rep(i,1,K+1) {
+        ret = (ret * (N+1-i))%MOD10;
+        // cout << ret << endl;
+
+        ret = (ret * modpow(i,MOD10-2,MOD10))%MOD10;
+        // cout << ret << endl;
+    }
+    
+    return ret;
+    
+}
+
+
+
 int main()
 { 
 
-
-    ll N, M; cin >> N >> M;
-    vvll adj(N);
-    rep(i,0,M) {
-        ll A, B; cin >> A >> B; 
-        A--; B--;
-        adj[A].push_back(B);
-        adj[B].push_back(A);
-    }
-
-    rep(i,0,N) {
-        map<ll,ll> mp;
-        mp[i]++;
-        for(auto u : adj[i]) {
-            mp[u]++;
-            for(auto v : adj[u]) {
-                mp[v]++;
-            }
-        }
-        cout << mp.size() - adj[i].size() - 1 << endl;
-    }    
-
+    ll N; cin >> N;
+    vvll dp(10,vll(10,0));
+    rep(i,1,N+1) {
+        string tmp = to_string(i);
+        dp[tmp[0]-'0'][tmp.back()-'0']++;
+    } 
+    ll sum = 0;
+    rep(i,1,N+1) {
+        string tmp = to_string(i);
+        sum += dp[tmp.back()-'0'][tmp[0]-'0'];
+    } 
+    cout << sum << endl;
 
     return 0;
 }     

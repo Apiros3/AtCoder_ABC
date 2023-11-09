@@ -870,30 +870,83 @@ ld log(T A,W B) {
     return log2(A)/logw(B);
 }
 
+
+template <typename T, typename V>
+struct RMQ {
+    vector<T> dat;
+    V N;
+    RMQ(V size, vector<T> val) {
+        V X = 1;
+        while(size > X) 
+            X *= 2;
+        dat.resize(X*2-1); //default value set to 0
+        N = X;
+        for(V i = N-1; i < N+size-1; ++i)
+            dat[i] = val[i+1-N];
+        for(V i = N-2; i >= 0; --i) 
+            dat[i] = update_function(dat[i*2+1],dat[i*2+2]);
+    }
+    void update(V i, T X) {
+        i += N-1;
+        dat[i] = X;
+        while(i) {
+            i = (i - 1)/2;
+            //updating equation
+            dat[i] = update_function(dat[i*2+1],dat[i*2+2]);
+        } 
+    }
+    //some fuction using elements of [a,b)
+    T query(V A, V B) { 
+        return query_sub(A, B, 0, 0, N);
+    }
+    T query_sub(V A, V B, V K, V L, V R) {
+        //K: current node, dat[K] = dat[L,R)
+        if (R <= A or B <= L) {
+            //completely out of range
+            return val_zero();
+        } else if (A <= L and R <= B) {
+            //fully in range
+            return dat[K];
+        } else {
+            //partly in range
+            T vl = query_sub(A, B, K*2+1, L, (L+R)/2);
+            T vr = query_sub(A, B, K*2+2, (L+R)/2, R);
+            //updating function for query
+            return update_function(vl,vr); 
+        }
+    }
+    T update_function(T vl, T vr) {
+        //updating function for any query
+        return min(vl,vr);
+    }
+    T val_zero() {
+        return INF;
+    }
+};
+
 int main()
 { 
 
 
-    ll N, M; cin >> N >> M;
-    vvll adj(N);
-    rep(i,0,M) {
-        ll A, B; cin >> A >> B; 
-        A--; B--;
-        adj[A].push_back(B);
-        adj[B].push_back(A);
-    }
-
+    ll N; cin >> N;
+    map<ll,ll> mpR, mpC;
+    map<pll,ll> mp;
+    vll R(N), C(N), X(N);
     rep(i,0,N) {
-        map<ll,ll> mp;
-        mp[i]++;
-        for(auto u : adj[i]) {
-            mp[u]++;
-            for(auto v : adj[u]) {
-                mp[v]++;
-            }
-        }
-        cout << mp.size() - adj[i].size() - 1 << endl;
-    }    
+        cin >> R[i] >> C[i] >> X[i];
+        mp[{R[i],C[i]}] = X[i];
+        mpR[R[i]] += X[i];
+        mpC[C[i]] += X[i];
+    }
+    
+    ll mx = 0;
+
+    for(auto u : mpR.size()) {
+        
+
+
+    }
+    cout << mx << endl;
 
 
     return 0;

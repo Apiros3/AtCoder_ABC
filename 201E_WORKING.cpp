@@ -41,6 +41,11 @@ template <typename T>
 void add(vector<T> &A, vector<T> B) {
     A.insert(A.end(),all(B));
 }
+template <typename T, typename W>
+void add(pair<T,W> &A, pair<T,W> B) {
+    A.first += B.first;
+    A.second += B.second;
+}
 
 ll popcount(ll X) {
     return __builtin_popcount(X);
@@ -870,30 +875,38 @@ ld log(T A,W B) {
     return log2(A)/logw(B);
 }
 
+//total, connected
+pair<pll,pll> dist(vvpll &adj, ll cur, ll prev) {
+    pair<pll,pll> ret = {{0,0},{0,0}};
+    for(auto u : adj[cur]) {
+        if (u.first == prev) continue;
+        pair<pll,pll> tmp = dist(adj, u.first, cur);
+        add(ret.first,tmp.first);
+    }
+    return ret;
+}
+
+
 int main()
 { 
 
-
-    ll N, M; cin >> N >> M;
-    vvll adj(N);
-    rep(i,0,M) {
-        ll A, B; cin >> A >> B; 
-        A--; B--;
-        adj[A].push_back(B);
-        adj[B].push_back(A);
+    ll N; cin >> N;
+    vvvpll adj(60,vvpll(N+1));
+    rep(i,0,N-1) {
+        ll U, V, W;
+        cin >> U >> V >> W;
+        rep(i,0,60) {
+            adj[i][U].push_back({V,(1ll << i) & W});
+            adj[i][V].push_back({U,(1ll << i) & W});
+        }
     }
 
-    rep(i,0,N) {
-        map<ll,ll> mp;
-        mp[i]++;
-        for(auto u : adj[i]) {
-            mp[u]++;
-            for(auto v : adj[u]) {
-                mp[v]++;
-            }
-        }
-        cout << mp.size() - adj[i].size() - 1 << endl;
-    }    
+    ll sum = 0;
+    rep(i,0,60) {
+        pll tmp = dist(adj[i], 1, -1);
+        sum += tmp.second * modpow(2,i,MOD10) % MOD10;
+    }
+    cout << sum%MOD10 << endl;
 
 
     return 0;

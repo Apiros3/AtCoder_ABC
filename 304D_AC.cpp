@@ -81,14 +81,6 @@ void debug(vector<T> &G) {
     cout << endl;
 }  
 template <typename T, typename W>
-void debug(map<T,W> &mp) {
-    for (auto &u : mp) {
-        debug(u.first);
-        debug(u.second);
-        cout << endl;
-    }
-} 
-template <typename T, typename W>
 void debug(map<T, vector<W>> &mp) {
     for(auto &u : mp) {
         debug(u.first);
@@ -96,7 +88,7 @@ void debug(map<T, vector<W>> &mp) {
     }
 }
 template <typename T, typename U>
-void debug(map<T,U> mp) {
+void debug(map<T,U> &mp) {
     for(auto u : mp) cout << u.first << "," << u.second << "  ";
     cout << endl;
 }
@@ -111,7 +103,9 @@ void debug_s(vvll G) {
         debug(u);
     }
 }
-
+void debug_s(vector<string> G) {
+    for (auto u : G) cout << u << endl;
+}
 
 //stores X,Y s.t. AX + BY = gcd(A,B) and returns gcd(A,B)
 ll extGCD(ll A, ll B, ll &X, ll&Y) {
@@ -254,7 +248,9 @@ ll inf_check(vvll &to) {
 
 
 struct UnionFind {
+    private:
     vector<ll> par; 
+    public:
     UnionFind(ll N) : par(N) {
         rep(i,0,N) par[i]=i;
     }
@@ -870,31 +866,48 @@ ld log(T A,W B) {
     return log2(A)/logw(B);
 }
 
+ll bigncr(ll N, ll K) {
+    ll ret = 1;
+    rep(i,1,K+1) {
+        ret = (ret * (N+1-i))%MOD10;
+        // cout << ret << endl;
+
+        ret = (ret * modpow(i,MOD10-2,MOD10))%MOD10;
+        // cout << ret << endl;
+    }
+    
+    return ret;
+    
+}
+
+
 int main()
 { 
 
+    ll W, H; cin >> W >> H;
+    ll N; cin >> N;
+    vll P(N), Q(N); input(P,Q);
+    ll a, b; cin >> a;
+    vll A(a); input(A);
+    cin >> b;
+    vll B(b); input(B);
 
-    ll N, M; cin >> N >> M;
-    vvll adj(N);
-    rep(i,0,M) {
-        ll A, B; cin >> A >> B; 
-        A--; B--;
-        adj[A].push_back(B);
-        adj[B].push_back(A);
-    }
+    map<pll,ll> mp;
 
     rep(i,0,N) {
-        map<ll,ll> mp;
-        mp[i]++;
-        for(auto u : adj[i]) {
-            mp[u]++;
-            for(auto v : adj[u]) {
-                mp[v]++;
-            }
-        }
-        cout << mp.size() - adj[i].size() - 1 << endl;
-    }    
+        ll ta = lower_bound(all(A),P[i]) - A.begin();
+        ll tb = lower_bound(all(B),Q[i]) - B.begin();
 
+        mp[{ta,tb}]++;
+    }
+    ll mn = INF, mx = 0;
+    for(auto u : mp) {
+        chmin(mn, u.second);
+        chmax(mx, u.second);
+    }
+    if ((a+1)*(b+1) > mp.size()) mn = 0;
+    
+    cout << mn << " " << mx << endl;
 
     return 0;
 }     

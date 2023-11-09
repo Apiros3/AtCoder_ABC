@@ -873,27 +873,45 @@ ld log(T A,W B) {
 int main()
 { 
 
+    string X; 
+    ll M; cin >> X >> M;
 
-    ll N, M; cin >> N >> M;
-    vvll adj(N);
-    rep(i,0,M) {
-        ll A, B; cin >> A >> B; 
-        A--; B--;
-        adj[A].push_back(B);
-        adj[B].push_back(A);
+    ll mxstr = 0;
+    for(auto u : X) {
+        chmax(mxstr,stoll(u));
+    }
+    if (X.size() == 1) {
+        cout << (M >= mxstr ? 1 : 0) << endl;
+        return 0;
+    }
+    if (mxstr > M) {
+        cout << 0 << endl;
+        return 0;
     }
 
-    rep(i,0,N) {
-        map<ll,ll> mp;
-        mp[i]++;
-        for(auto u : adj[i]) {
-            mp[u]++;
-            for(auto v : adj[u]) {
-                mp[v]++;
-            }
+    ll ok = 1, ng = intpow(10,18)+1;
+    while(ok + 1 < ng) {
+        ll md = (ok+ng)/2;
+        ld tcn = 0;
+        rep(i,0,X.size()) {
+            tcn += pow(md,X.size()-i-1)*stoll(X[i]);      
         }
-        cout << mp.size() - adj[i].size() - 1 << endl;
-    }    
+        //set this too low, intpow breaks later
+        if (tcn >= 2*intpow(10,18) || tcn != tcn) {
+            ng = md; 
+            continue;   
+        }
+        // else cout << md << " " << tcn << endl;
+        ll cn = 0;
+        rep(i,0,X.size()) {
+            cn += stoll(X[i])*intpow(md,X.size()-i-1);
+        }
+        // cout << md << " " << cn << endl;
+        if (cn <= M) ok = md;
+        else ng = md;
+    }   
+    cout << max(0ll,ok-mxstr) << endl;
+
 
 
     return 0;

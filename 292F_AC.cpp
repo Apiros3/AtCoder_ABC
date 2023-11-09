@@ -870,30 +870,33 @@ ld log(T A,W B) {
     return log2(A)/logw(B);
 }
 
+ld A, B; 
+ld f(ld x) {
+    return min(A/cos(x), B/cos(PI/6 - x));
+}
+
 int main()
 { 
 
 
-    ll N, M; cin >> N >> M;
-    vvll adj(N);
-    rep(i,0,M) {
-        ll A, B; cin >> A >> B; 
-        A--; B--;
-        adj[A].push_back(B);
-        adj[B].push_back(A);
-    }
+    cin >> A >> B;
+    ld mn = 0, mx = PI/6;
 
-    rep(i,0,N) {
-        map<ll,ll> mp;
-        mp[i]++;
-        for(auto u : adj[i]) {
-            mp[u]++;
-            for(auto v : adj[u]) {
-                mp[v]++;
-            }
+    rep(i,0,10000) {
+        ld m1 = (2*mn + mx)/3;
+        ld m2 = (mn + 2*mx)/3;
+        ld t1 = f(m1);
+        ld t2 = f(m2);
+
+        if (t1 > t2) {
+            mx = m2;
         }
-        cout << mp.size() - adj[i].size() - 1 << endl;
-    }    
+        else {
+            mn = m1;
+        }
+
+    }
+    cout << f((mn+mx)/2) << endl;
 
 
     return 0;

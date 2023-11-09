@@ -870,30 +870,64 @@ ld log(T A,W B) {
     return log2(A)/logw(B);
 }
 
+//0 if 1st to move wins, 1 else
+// ll dfs(string cur, string fin) {
+//     rep(i,0,cur.size()) {
+//         if (cur[i] < fin[i]) {
+
+
+//         }
+//         else if (cur[i] > fin[i]) {
+//             if (fin.size()&1) return 1;
+//             else return 0;
+//         }
+//     }
+//     if (cur == fin) return (1 - (fin.size()&1));
+
+
+// }
+
+ll experim(ll cur, ll max) {
+    if (2*cur > max) return 1;
+    if (2*cur == max) return 0;
+    ll sum = experim(2*cur,max) + experim(2*cur+1,max);
+    return sum == 0;     
+
+}
+
+
 int main()
 { 
 
+    ll N; cin >> N;
+    // vpll vec(1,{1,0});
+    // rep(i,1,N+1) {
+    //     ll tmp = experim(1,i);
+    //     if (tmp == vec.back().first) vec.back().second++;
+    //     else vec.push_back({tmp,1});
+    // }
+    // debug(vec);
 
-    ll N, M; cin >> N >> M;
-    vvll adj(N);
-    rep(i,0,M) {
-        ll A, B; cin >> A >> B; 
-        A--; B--;
-        adj[A].push_back(B);
-        adj[B].push_back(A);
+    if (N == 1) {
+        cout << "Aoki" << endl;
+        return 0;
     }
-
-    rep(i,0,N) {
-        map<ll,ll> mp;
-        mp[i]++;
-        for(auto u : adj[i]) {
-            mp[u]++;
-            for(auto v : adj[u]) {
-                mp[v]++;
-            }
+    ll cnt = 1, add = 4;
+    while(1) {
+        cnt += add;
+        if (cnt >= N) {
+            cout << "Takahashi" << endl;
+            return 0;
         }
-        cout << mp.size() - adj[i].size() - 1 << endl;
-    }    
+        cnt += add;
+        if (cnt >= N) {
+            cout << "Aoki" << endl;
+            return 0;
+
+        }
+
+        add *= 4;
+    }
 
 
     return 0;

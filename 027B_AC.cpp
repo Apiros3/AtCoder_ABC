@@ -111,7 +111,9 @@ void debug_s(vvll G) {
         debug(u);
     }
 }
-
+void debug_s(vector<string> G) {
+    for (auto u : G) cout << u << endl;
+}
 
 //stores X,Y s.t. AX + BY = gcd(A,B) and returns gcd(A,B)
 ll extGCD(ll A, ll B, ll &X, ll&Y) {
@@ -870,30 +872,25 @@ ld log(T A,W B) {
     return log2(A)/logw(B);
 }
 
+
+
 int main()
 { 
 
-
-    ll N, M; cin >> N >> M;
-    vvll adj(N);
-    rep(i,0,M) {
-        ll A, B; cin >> A >> B; 
-        A--; B--;
-        adj[A].push_back(B);
-        adj[B].push_back(A);
+    ll N; cin >> N;
+    vll A(N); input(A);
+    ll sum = 0;
+    for(auto u : A) sum += u;
+    if (sum%N != 0) {
+        cout << -1 << endl;
+        return 0;
     }
-
+    ll cnt = 0, tsum = 0;
     rep(i,0,N) {
-        map<ll,ll> mp;
-        mp[i]++;
-        for(auto u : adj[i]) {
-            mp[u]++;
-            for(auto v : adj[u]) {
-                mp[v]++;
-            }
-        }
-        cout << mp.size() - adj[i].size() - 1 << endl;
-    }    
+        tsum += A[i];
+        if (tsum == sum/N * (i+1)) cnt++;
+    }
+    cout << N - cnt << endl;
 
 
     return 0;

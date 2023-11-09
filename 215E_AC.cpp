@@ -41,6 +41,11 @@ template <typename T>
 void add(vector<T> &A, vector<T> B) {
     A.insert(A.end(),all(B));
 }
+template <typename T, typename W>
+void add(pair<T,W> &A, pair<T,W> B) {
+    A.first += B.first;
+    A.second += B.second;
+}
 
 ll popcount(ll X) {
     return __builtin_popcount(X);
@@ -870,31 +875,69 @@ ld log(T A,W B) {
     return log2(A)/logw(B);
 }
 
+//total, connected
+pair<pll,pll> dist(vvpll &adj, ll cur, ll prev) {
+    pair<pll,pll> ret = {{0,0},{0,0}};
+    for(auto u : adj[cur]) {
+        if (u.first == prev) continue;
+        pair<pll,pll> tmp = dist(adj, u.first, cur);
+        add(ret.first,tmp.first);
+    }
+    return ret;
+}
+
+
 int main()
 { 
 
+    ll N; string S;
+    cin >> N >> S;
 
-    ll N, M; cin >> N >> M;
-    vvll adj(N);
-    rep(i,0,M) {
-        ll A, B; cin >> A >> B; 
-        A--; B--;
-        adj[A].push_back(B);
-        adj[B].push_back(A);
-    }
+    // map<char,ll> mp;
+    // for(auto u : S) mp[u]++;
 
-    rep(i,0,N) {
-        map<ll,ll> mp;
-        mp[i]++;
-        for(auto u : adj[i]) {
-            mp[u]++;
-            for(auto v : adj[u]) {
-                mp[v]++;
+    vvvll dp(N+1,vvll(1024,vll(10,0)));
+    dp[0][0][0] = 1;
+
+    rep(i,1,N+1) {
+        // mp[S[i-1]]--;
+        ll cn = (S[i-1] - 'A');
+        ll tmp = 1ll << (S[i-1] - 'A');
+        rep(j,0,1024) {
+            rep(k,0,10) dp[i][j][k] = dp[i-1][j][k]%MOD9;
+        }
+        rep(j,0,1024) {
+            if ((j & tmp) == 0) {
+                rep(k,0,10) {
+                    dp[i][j+tmp][cn] += dp[i-1][j][k];
+                }
+                dp[i][j+tmp][cn] %= MOD9;
             }
         }
-        cout << mp.size() - adj[i].size() - 1 << endl;
-    }    
+        rep(j,0,1024) {
+            if (j & tmp) {
+                dp[i][j][cn] += dp[i-1][j][cn];
+                dp[i][j][cn] %= MOD9;
+            }
+        }
+        
+    }
 
+    ll sum = 0;
+    for(auto u : dp[N]) {
+        for(auto v : u) sum += v;
+    }
+    cout << (sum+MOD9-1)%MOD9 << endl;
+
+    // rep(i,0,dp.size()) {
+    //     rep(j,0,dp[i].size()) {
+    //         rep(k,0,dp[i][j].size()) {
+    //             if (dp[i][j][k]) {
+    //                 cout << i << " " << j << " " << k << " " << dp[i][j][k] << endl;
+    //             }
+    //         }
+    //     }
+    // }
 
     return 0;
 }     
